@@ -2,6 +2,7 @@
  - include: iocage.yml
  - include: net.yml
  - include: pf.yml
+ - include: nginx.yml
  - include: syslogd.yml
  - include: sshd.yml
  - include: ssmtp.yml
