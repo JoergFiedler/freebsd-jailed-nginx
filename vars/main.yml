@@ -1,0 +1,3 @@
+---
+# vars file for jailed_syslogd
+jail_hostname: '{{ jail_name }}.{{ jail_domain }}'
