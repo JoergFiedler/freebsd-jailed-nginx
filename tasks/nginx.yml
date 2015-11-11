@@ -3,3 +3,10 @@
   pkgng: name=nginx
          state=present
          chroot={{ jail_home.stdout }}
+
+- name: Enable service
+  lineinfile: dest={{ jail_home.stdout }}/etc/rc.conf
+              state=present
+              regexp='^nginx_enable='
+              line='nginx_enable=\"YES\"'
+
