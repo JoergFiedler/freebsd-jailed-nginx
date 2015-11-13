@@ -1,7 +1,22 @@
 ---
+- name: Copy pf configuration (rdr rules)
+  template:
+    src: pf.anchor.rdr-jail.conf.j2
+    dest: /etc/pf.anchor.rdr-jail.{{ jail_name }}.conf
+  notify:
+    - Reload pf
+
+- name: Add pf configuration to anchor.rdr-jail conf
+  lineinfile:
+    dest: /etc/pf.anchor.rdr-jail.conf
+    state: present
+    line: 'include \"/etc/pf.anchor.rdr-jail.{{ jail_name }}.conf\"'
+  notify:
+    - Reload pf
+
 - name: Copy pf configuration (rls rules)
   template:
-    src: 'pf.anchor.rls-jail.conf.j2'
+    src: pf.anchor.rls-jail.conf.j2
     dest: /etc/pf.anchor.rls-jail.{{ jail_name }}.conf
   notify:
     - Reload pf
