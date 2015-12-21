@@ -16,5 +16,4 @@ galaxy_info:
   - ec2
   - nginx
 dependencies:
-- { role: JoergFiedler.freebsd-jail-host,
-    tags: ['host'] }
+- { role: JoergFiedler.freebsd-jailed }

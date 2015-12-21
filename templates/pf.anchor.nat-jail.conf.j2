@@ -1,0 +1,12 @@
+# allow outgoing DNS queries
+nat pass log proto { tcp,udp } \
+  from {{ jail_net_ip }} \
+  to any port 53 \
+  -> {{ host_net_ext_ip }}
+
+# allow outgoing https(s) requests to request
+# updates via OCSP
+nat pass log proto tcp \
+  from {{ jail_net_ip }} \
+  to { {{ nginx_ocsp_server }} } port { http,https } \
+  -> {{ host_net_ext_ip }}

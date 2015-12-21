@@ -4,4 +4,8 @@ ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
 ssl_prefer_server_ciphers on;
 ssl_session_cache shared:SSL:10m;
 
+ssl_stapling on;
+ssl_stapling_verify on;
+ssl_trusted_certificate /usr/local/etc/nginx/cert.pem
+
 

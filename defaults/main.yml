@@ -1,10 +1,4 @@
 ---
 # defaults file for jailed_syslogd
+nginx_ocsp_server: 'ocsp.startssl.com'
 
-jail_name: '{{ jail_net_ip }}'
-jail_domain: 'darkcity'
-jail_net_if: 'lo0'
-jail_net_net: '{{ jail_net_ip }}/24'
-
-ssmtp_forward_address: 'freebsd-ansible-demo@maildrop.cc'
-ssmtp_forward_mailhub: 'mail.maildrop.cc'

@@ -29,3 +29,18 @@
   notify:
     - Reload pf
 
+- name: Copy pf configuration (nat rules)
+  template:
+    src: pf.anchor.nat-jail.conf.j2
+    dest: /etc/pf.anchor.nat-jail.{{ jail_name }}.conf
+  notify:
+    - Reload pf
+
+- name: Add pf configuration to anchor.nat-jail conf
+  lineinfile:
+    dest: /etc/pf.anchor.nat-jail.conf
+    state: present
+    line: 'include \"/etc/pf.anchor.nat-jail.{{ jail_name }}.conf\"'
+  notify:
+    - Reload pf
+
