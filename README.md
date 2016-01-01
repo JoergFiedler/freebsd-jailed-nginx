@@ -37,24 +37,26 @@ The CA authority's OSCP server name. Use to allow http(s) traffic to this host. 
 
 ##### nginx_server_key:
 
-The key used to secure https traffic. Default: `'ssl/server.key'`
+The key used to secure https traffic. Default: `'server.key'`
 
 ##### nginx_server_cert_bundle:
 
-The server's certificate bundle containing the cert itself and possible intermediate CA's. Default: `'ssl/cert-bundle.pem'`
+The server's certificate bundle containing the cert itself and possible intermediate CA's. Default: `'cert-bundle.pem'`
 
 ##### nginx_cachain:
 
-The certificate chain used to validate responses from OSCP server. Default: `'ssl/cachain.pem'`
+The certificate chain used to validate responses from OSCP server. Default: `'cachain.pem'`
 
 ##### nginx_dhparam:
 
-The DH parameter. Default: `'ssl/dhparam.pem'`
+The DH parameter. Default: `'dhparam.pem'`
 
 
 ##### syslogd_server
 
-The syslogd server nginx should log to. Error and access logs will be send to it. Default: `''`
+e syslogd server to which all syslog messages are going to be forwarded. No default value.
+
+This feature is only active if the variable `use_syslogd_server` is set to any value.
 
 ##### ssmtp_forward_address
 
@@ -79,6 +81,13 @@ Dependencies
 
 Example Playbook
 ----------------
+
+    - { role: JoergFiedler.freebsd-jailed-nginx,
+        tags: ['nginx'],
+        use_ssmtp: true,
+        use_syslogd_server: true,
+        jail_name: 'nginx',
+        jail_net_ip: '10.1.0.5' }
 
 License
 -------

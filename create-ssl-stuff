@@ -8,14 +8,14 @@ openssl dhparam \
 openssl req \
   -nodes \
   -newkey rsa:2048 \
-  -keyout files/ssl/server.key \
-  -out files/ssl/cert-bundle.pem \
+  -keyout files/server.key \
+  -out files/cert-bundle.pem \
   -subj "/C=DE/ST=Berlin/L=Berlin/CN=localhost" \
   -days 180 \
   -x509 \
   -sha256 > /dev/null 2>&1
 
-cp files/ssl/cert-bundle.pem files/ssl/cachain.pem
+cp files/cert-bundle.pem files/cachain.pem
 
 cat <<EOF
 
@@ -23,9 +23,9 @@ cat <<EOF
     -----
 
     The following files were created:
-      - files/ssl/server.key
-      - files/ssl/cert-bundle.pem
-      - files/ssl/cachain.pem
+      - files/server.key
+      - files/cert-bundle.pem
+      - files/cachain.pem
 
     If you are using certificates issued by intermediate
     certificate authorities, this is how all those certs
