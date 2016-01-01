@@ -1,3 +1,4 @@
+<<<<<<< a531cb1777e516da322c2a25bcc91ade1e3ec3a5
 # allow outgoing DNS queries
 nat pass log proto { tcp,udp } \
   from {{ jail_net_ip }} \
@@ -9,4 +10,14 @@ nat pass log proto { tcp,udp } \
 nat pass log proto tcp \
   from {{ jail_net_ip }} \
   to { {{ nginx_ocsp_server }} } port { http,https } \
+=======
+# redirect http(s) requests to external ip
+nat pass log on {{ host_net_ext_if }} proto tcp \
+  from {{ jail_net_ip }} \
+  to {{ nginx_oscp_server }} port { http,https } \
+  -> {{ host_net_ext_ip }}
+nat pass log on {{ host_net_ext_if }} proto udp \
+  from {{ jail_net_ip }} \
+  to any port domain \
+>>>>>>> big bang
   -> {{ host_net_ext_ip }}

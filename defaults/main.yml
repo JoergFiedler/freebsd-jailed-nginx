@@ -1,4 +1,7 @@
 ---
 # defaults file for jailed_syslogd
-nginx_ocsp_server: 'ocsp.startssl.com'
-
+nginx_oscp_server: 'localhost'
+nginx_server_key: 'ssl/server.key'
+nginx_server_cert_bundle: 'ssl/cert-bundle.pem'
+nginx_cachain: 'ssl/cachain.pem'
+nginx_dhparam: 'ssl/dhparam.pem'

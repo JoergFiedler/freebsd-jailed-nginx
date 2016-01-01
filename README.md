@@ -31,6 +31,31 @@ The interface to which the jail's ip address is added. Default: `'lo0'`.
 
 The jail's ip address. No default value.
 
+##### nginx_oscp_server
+
+The CA authority's OSCP server name. Use to allow http(s) traffic to this host. Default: `'localhost'`
+
+##### nginx_server_key:
+
+The key used to secure https traffic. Default: `'ssl/server.key'`
+
+##### nginx_server_cert_bundle:
+
+The server's certificate bundle containing the cert itself and possible intermediate CA's. Default: `'ssl/cert-bundle.pem'`
+
+##### nginx_cachain:
+
+The certificate chain used to validate responses from OSCP server. Default: `'ssl/cachain.pem'`
+
+##### nginx_dhparam:
+
+The DH parameter. Default: `'ssl/dhparam.pem'`
+
+
+##### syslogd_server
+
+The syslogd server nginx should log to. Error and access logs will be send to it. Default: `''`
+
 ##### ssmtp_forward_address
 
 System mails are forwarded to this address. See [ssmtp man page](https://www.freebsd.org/cgi/man.cgi?query=ssmtp&apropos=0&sektion=0&manpath=FreeBSD+10.2-RELEASE+and+Ports&arch=default&format=html) for further information.
@@ -50,7 +75,7 @@ This feature is only active, if the variable `use_ssmtp` is set to any value.
 Dependencies
 ------------
 
-- [JoergFiedler.freebsd-jail-host](https://galaxy.ansible.com/detail#/role/5827)
+- [JoergFiedler.freebsd-jailed](https://galaxy.ansible.com/detail#/role/6599)
 
 Example Playbook
 ----------------

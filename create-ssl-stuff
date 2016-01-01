@@ -1,0 +1,38 @@
+#!/bin/sh
+
+echo 'Create SSL key,certs (testing purpose only). Takes a few minutes.'
+
+openssl dhparam \
+  -out dhparam.pem 4096 > /dev/null 2>&1
+
+openssl req \
+  -nodes \
+  -newkey rsa:2048 \
+  -keyout files/ssl/server.key \
+  -out files/ssl/cert-bundle.pem \
+  -subj "/C=DE/ST=Berlin/L=Berlin/CN=localhost" \
+  -days 180 \
+  -x509 \
+  -sha256 > /dev/null 2>&1
+
+cp files/ssl/cert-bundle.pem files/ssl/cachain.pem
+
+cat <<EOF
+
+    Notes
+    -----
+
+    The following files were created:
+      - files/ssl/server.key
+      - files/ssl/cert-bundle.pem
+      - files/ssl/cachain.pem
+
+    If you are using certificates issued by intermediate
+    certificate authorities, this is how all those certs
+    are chained together
+
+    1) cachain
+     > cat intermediate.ca root.ca > cachain.pem
+    2) cert-bundle.pem
+     > cat server.cert cachain.pem > cert-bundle.pem
+EOF
