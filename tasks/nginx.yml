@@ -28,8 +28,11 @@
   - Reload {{ jail_name }} s nginx
 
 - name: Copy nginx configuration
-  template: src=nginx.conf.p2
-            dest={{ jail_home.stdout }}/usr/local/etc/nginx/nginx.conf
+  template: src={{ item.src}}
+            dest={{ jail_home.stdout }}/usr/local/etc/nginx/{{ item.dst }}
+  with_items:
+  - { src: nginx.conf.p2, dst: nginx.conf }
+  - { src: nginx-ssl.conf.p2, dst: includes/nginx-ssl.conf }
   notify:
   - Reload {{ jail_name }} s nginx
 

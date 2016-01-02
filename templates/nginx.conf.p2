@@ -9,6 +9,8 @@ events {
 
 http {
     include       mime.types;
+    include       includes/*.conf;
+
     default_type  application/octet-stream;
 
     sendfile        on;
@@ -17,33 +19,22 @@ http {
 
     gzip  on;
 
+    access_log syslog:server={{ syslogd_server }} combined;
+
     server {
         listen       80;
-        listen       443 ssl;
         server_name  localhost;
 
-        access_log syslog:server={{ syslogd_server }} combined;
+        root   /usr/local/www/nginx;
+
+        error_page   500 502 503 504  /50x.html;
 
         location / {
-            root   /usr/local/www/nginx;
             index  index.html index.htm;
         }
 
-        error_page   500 502 503 504  /50x.html;
         location = /50x.html {
             root   /usr/local/www/nginx-dist;
         }
-
-        ssl_certificate      ssl/cert-bundle.pem;
-        ssl_certificate_key  ssl/server.key;
-
-        ssl_dhparam /usr/local/etc/nginx/ssl/dhparam.pem;
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-        ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
-        ssl_prefer_server_ciphers on;
-        ssl_session_cache shared:SSL:10m;
-        ssl_stapling on;
-        ssl_stapling_verify on;
-        ssl_trusted_certificate ssl/cachain.pem;
     }
 }

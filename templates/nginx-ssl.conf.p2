@@ -1,0 +1,29 @@
+ssl_certificate           ssl/cert-bundle.pem;
+ssl_certificate_key       ssl/server.key;
+ssl_trusted_certificate   ssl/cachain.pem;
+ssl_dhparam               ssl/dhparam.pem;
+
+ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+ssl_ciphers               'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+ssl_prefer_server_ciphers on;
+ssl_session_cache         shared:SSL:10m;
+
+ssl_stapling              on;
+ssl_stapling_verify       on;
+
+server {
+    listen       443 ssl;
+    server_name  localhost;
+
+    root   /usr/local/www/nginx;
+
+    error_page   500 502 503 504  /50x.html;
+
+    location / {
+        index  index.html index.htm;
+    }
+
+    location = /50x.html {
+        root   /usr/local/www/nginx-dist;
+    }
+}
