@@ -1,3 +1,7 @@
 ---
  - include: pf.yml
  - include: nginx.yml
+ - include: nginx-https.yml
+   when: nginx_enable_https
+ - include: pf-https.yml
+   when: nginx_enable_https

@@ -31,6 +31,10 @@ The interface to which the jail's ip address is added. Default: `'lo0'`.
 
 The jail's ip address. No default value.
 
+##### nginx_enable_https
+
+Acitvate SSL on default nginx server and set sane defaults for `ssl_param_*` directives. Default: `yes`.
+
 ##### nginx_oscp_server
 
 The CA authority's OSCP server name. Use to allow http(s) traffic to this host. Default: `'localhost'`

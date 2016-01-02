@@ -1,5 +1,5 @@
 # redirect http(s) requests to external ip
 rdr pass log on {{ host_net_ext_if }} proto tcp \
   from any \
-  to {{ host_net_ext_ip }} port http \
+  to {{ host_net_ext_ip }} port https \
   -> {{ jail_net_ip }}

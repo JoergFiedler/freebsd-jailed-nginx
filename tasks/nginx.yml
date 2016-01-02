@@ -1,45 +1,18 @@
 ---
-- name: Create directory to hold key and certs
-  file: path={{ jail_home.stdout }}/usr/local/etc/nginx/ssl
-        state=directory
-
-- name: Copy server key
-  copy: src={{ nginx_server_key }}
-        dest={{ jail_home.stdout }}/usr/local/etc/nginx/ssl/server.key
-  notify:
-  - Reload {{ jail_name }} s nginx
-
-- name: Copy server cert bundle
-  copy: src={{ nginx_server_cert_bundle }}
-        dest={{ jail_home.stdout }}/usr/local/etc/nginx/ssl/cert-bundle.pem
-  notify:
-  - Reload {{ jail_name }} s nginx
-
-- name: Copy server DH param
-  copy: src={{ nginx_dhparam }}
-        dest={{ jail_home.stdout }}/usr/local/etc/nginx/ssl/dhparam.pem
-  notify:
-  - Reload {{ jail_name }} s nginx
-
-- name: Copy ca chain
-  copy: src={{ nginx_cachain }}
-        dest={{ jail_home.stdout }}/usr/local/etc/nginx/ssl/cachain.pem
-  notify:
-  - Reload {{ jail_name }} s nginx
-
-- name: Copy nginx configuration
-  template: src={{ item.src}}
-            dest={{ jail_home.stdout }}/usr/local/etc/nginx/{{ item.dst }}
-  with_items:
-  - { src: nginx.conf.p2, dst: nginx.conf }
-  - { src: nginx-ssl.conf.p2, dst: includes/nginx-ssl.conf }
-  notify:
-  - Reload {{ jail_name }} s nginx
-
 - name: Install nginx
   pkgng: name=nginx
          state=present
          chroot={{ jail_home.stdout }}
+
+- name: Copy nginx configuration
+  template: src=nginx.conf.p2
+            dest={{ jail_home.stdout }}/usr/local/etc/nginx/nginx.conf
+  notify:
+  - Reload {{ jail_name }} s nginx
+
+- name: Create includes directory
+  file: path={{ jail_home.stdout }}/usr/local/etc/nginx/includes
+        state=directory
 
 - name: Enable service
   lineinfile: dest={{ jail_home.stdout }}/etc/rc.conf

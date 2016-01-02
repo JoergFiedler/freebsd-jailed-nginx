@@ -1,5 +1,6 @@
 ---
 # defaults file for jailed_syslogd
+nginx_enable_https: yes
 nginx_oscp_server: 'localhost'
 nginx_server_key: 'server.key'
 nginx_server_cert_bundle: 'cert-bundle.pem'
