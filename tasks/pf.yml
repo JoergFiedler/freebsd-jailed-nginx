@@ -10,7 +10,7 @@
   lineinfile:
     dest: /etc/pf.anchor.rdr-jail.conf
     state: present
-    line: 'include \"/etc/pf.anchor.rdr-jail.{{ jail_name }}.conf\"'
+    line: 'include "/etc/pf.anchor.rdr-jail.{{ jail_name }}.conf"'
   notify:
     - Reload pf
 
