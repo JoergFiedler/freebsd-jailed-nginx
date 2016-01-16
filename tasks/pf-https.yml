@@ -10,7 +10,7 @@
   lineinfile:
     dest: /etc/pf.anchor.nat-jail.conf
     state: present
-    line: 'include \"/etc/pf.anchor.nat-jail.{{ jail_name }}-https.conf\"'
+    line: 'include "/etc/pf.anchor.nat-jail.{{ jail_name }}-https.conf"'
   notify:
     - Reload pf
 
@@ -25,7 +25,7 @@
   lineinfile:
     dest: /etc/pf.anchor.rdr-jail.conf
     state: present
-    line: 'include \"/etc/pf.anchor.rdr-jail.{{ jail_name }}-https.conf\"'
+    line: 'include "/etc/pf.anchor.rdr-jail.{{ jail_name }}-https.conf"'
   notify:
     - Reload pf
 
