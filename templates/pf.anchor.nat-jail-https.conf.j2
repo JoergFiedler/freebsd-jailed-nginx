@@ -3,7 +3,3 @@ nat pass log on {{ host_net_ext_if }} proto tcp \
   from {{ jail_net_ip }} \
   to {{ nginx_oscp_server }} port { http,https } \
   -> {{ host_net_ext_ip }}
-nat pass log on {{ host_net_ext_if }} proto udp \
-  from {{ jail_net_ip }} \
-  to any port domain \
-  -> {{ host_net_ext_ip }}
