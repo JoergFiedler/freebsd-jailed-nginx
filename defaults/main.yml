@@ -1,8 +1,19 @@
 ---
-# defaults file for jailed_syslogd
-nginx_enable_https: yes
-nginx_oscp_server: 'localhost'
-nginx_server_key: 'server.key'
-nginx_server_cert_bundle: 'cert-bundle.pem'
-nginx_cachain: 'cachain.pem'
-nginx_dhparam: 'dhparam.pem'
+# defaults file for jailed_nginx
+nginx: {
+  pf_rdrs: [
+    { ports: ['http', 'https'],
+      ext_ip: '{{ host_net_ext_ip }}',
+      ext_if: '{{ host_net_ext_if }}' }
+  ],
+  servers: [{
+    default: true,
+    name: "localhost",
+    aliases: "127.0.0.1",
+    https: {
+      oscp_server: "localhost",
+    },
+    webroot: '/usr/local/www/nginx',
+    proxy: {}}
+  ]
+}

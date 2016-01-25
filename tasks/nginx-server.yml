@@ -1,0 +1,12 @@
+---
+- set_fact: server={{ item }}
+
+- name: Copy server configuration
+  template:
+    src: 'nginx-server.conf.p2'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.conf'
+  notify:
+    - Reload {{ jail_name }} s nginx
+
+- include: 'nginx-server-https.yml'
+  when: server.https is defined

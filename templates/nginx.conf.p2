@@ -9,7 +9,6 @@ events {
 
 http {
     include       mime.types;
-    include       includes/*.conf;
 
     default_type  application/octet-stream;
 
@@ -25,20 +24,8 @@ http {
       '"$http_referer" "$http_user_agent"';
     access_log syslog:server={{ syslogd_server }} virt-host;
 
-    server {
-        listen       80;
-        server_name  localhost _;
+{% for server in nginx.servers %}
+    include /usr/local/etc/nginx/includes/{{ server.name }}.conf;
+{% endfor %}
 
-        root   /usr/local/www/nginx;
-
-        error_page   500 502 503 504  /50x.html;
-
-        location / {
-            index  index.html index.htm;
-        }
-
-        location = /50x.html {
-            root   /usr/local/www/nginx-dist;
-        }
-    }
 }

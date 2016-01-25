@@ -1,16 +1,22 @@
 ---
+- set_fact: rdr={{ item }}
+
 - name: Copy pf configuration (rdr rules)
   template:
-    src: pf.anchor.rdr-jail.conf.j2
-    dest: /etc/pf.anchor.rdr-jail.{{ jail_name }}.conf
+    src: 'pf.anchor.rdr-jail.conf.j2'
+    dest: '/etc/pf.anchor.rdr-jail.{{ jail_name }}-{{ item }}.conf'
+  with_items:
+    - '{{ rdr.ports }}'
   notify:
     - Reload pf
 
 - name: Add pf configuration to anchor.rdr-jail conf
   lineinfile:
-    dest: /etc/pf.anchor.rdr-jail.conf
+    dest: '/etc/pf.anchor.rdr-jail.conf'
     state: present
-    line: 'include "/etc/pf.anchor.rdr-jail.{{ jail_name }}.conf"'
+    line: 'include "/etc/pf.anchor.rdr-jail.{{ jail_name }}-{{ item }}.conf"'
+  with_items:
+    - '{{ rdr.ports }}'
   notify:
     - Reload pf
 

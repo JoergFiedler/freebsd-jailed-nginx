@@ -1,7 +1,7 @@
 freebsd-jailed-nginx
 =========
 
-This role provides a jailed nginx server.
+This role provides a jailed nginx server that listens on `localhost:{80,443}` for incoming requests. For that matter the role provides a decent SSL configuration.
 
 To see this role in action, have a look at [this project of mine](https://github.com/JoergFiedler/freebsd-ansible-demo).
 
@@ -15,45 +15,25 @@ You will find a sample project which uses this role [here](https://github.com/Jo
 Role Variables
 --------------
 
-##### jail_name
+##### nginx
 
-The name for the jail. Local part of the hostname. Default: `'{{ jail_net_ip }}'`.
+    nginx: {
+      pf_rdrs: [
+        { ports: ['http', 'https'],
+          ext_ip: '{{ host_net_ext_ip }}',
+          ext_if: '{{ host_net_ext_if }}' }
+      ],
+      servers: [{
+        default: true,
+        name: "localhost",
+        aliases: "127.0.0.1",
+        https: {
+          oscp_server: "localhost",
+        },
+        webroot: '/usr/local/www/nginx'
+      ]
+    }
 
-##### jail_domain
-
-The domain this jail belongs to. Domain part of the hostname. Default: `'darkcity'`.
-
-##### jail_net_if
-
-The interface to which the jail's ip address is added. Default: `'lo0'`.
-
-##### jail_net_ip
-
-The jail's ip address. No default value.
-
-##### nginx_enable_https
-
-Acitvate SSL on default nginx server and set sane defaults for `ssl_param_*` directives. Default: `yes`.
-
-##### nginx_oscp_server
-
-The CA authority's OSCP server name. Use to allow http(s) traffic to this host. Default: `'localhost'`
-
-##### nginx_server_key:
-
-The key used to secure https traffic. Default: `'server.key'`
-
-##### nginx_server_cert_bundle:
-
-The server's certificate bundle containing the cert itself and possible intermediate CA's. Default: `'cert-bundle.pem'`
-
-##### nginx_cachain:
-
-The certificate chain used to validate responses from OSCP server. Default: `'cachain.pem'`
-
-##### nginx_dhparam:
-
-The DH parameter. Default: `'dhparam.pem'`
 
 Dependencies
 ------------

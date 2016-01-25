@@ -1,0 +1,30 @@
+---
+- set_fact: server={{ item }}
+- set_fact: prefix={{ jail_home.stdout }}/usr/local/etc/nginx/ssl
+
+- name: Copy server key
+  copy:
+    src: '{{ item }}'
+    dest: '{{ prefix }}/{{ item }}'
+  with_items:
+    - '{{ server.name }}-key.pem'
+    - '{{ server.name }}-certbundle.pem'
+    - '{{ server.name }}-cachain.pem'
+    - '{{ server.name }}-dhparam.pem'
+  notify:
+  - Reload {{ jail_name }} s nginx
+
+- name: Copy pf configuration (nat rules)
+  template:
+    src: 'pf.anchor.nat-jail-https.conf.j2'
+    dest: '/etc/pf.anchor.nat-jail.{{ jail_name }}-https-{{ server.name }}.conf'
+  notify:
+    - Reload pf
+
+- name: Add pf configuration to anchor.nat-jail conf
+  lineinfile:
+    dest: '/etc/pf.anchor.nat-jail.conf'
+    state: present
+    line: 'include "/etc/pf.anchor.nat-jail.{{ jail_name }}-https-{{ server.name }}.conf"'
+  notify:
+    - Reload pf

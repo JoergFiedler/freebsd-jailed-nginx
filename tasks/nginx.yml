@@ -1,22 +1,30 @@
 ---
 - name: Install nginx
-  pkgng: name=nginx
-         state=present
-         chroot={{ jail_home.stdout }}
+  pkgng:
+    name: 'nginx'
+    state: present
+    chroot: '{{ jail_home.stdout }}'
 
 - name: Copy nginx configuration
-  template: src=nginx.conf.p2
-            dest={{ jail_home.stdout }}/usr/local/etc/nginx/nginx.conf
-  notify:
-  - Reload {{ jail_name }} s nginx
+  template:
+    src: 'nginx.conf.p2'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/nginx.conf'
 
-- name: Create includes directory
-  file: path={{ jail_home.stdout }}/usr/local/etc/nginx/includes
-        state=directory
+- name: Create directories
+  file:
+    path: '{{ jail_home.stdout }}/usr/local/etc/nginx/{{ item }}'
+    state: directory
+  with_items:
+    - 'includes'
+    - 'ssl'
 
 - name: Enable service
-  lineinfile: dest={{ jail_home.stdout }}/etc/rc.conf
-              state=present
-              regexp='^nginx_enable='
-              line='nginx_enable="YES"'
+  lineinfile:
+    dest: '{{ jail_home.stdout }}/etc/rc.conf'
+    state: present
+    regexp: '^nginx_enable='
+    line: 'nginx_enable="YES"'
 
+- include: 'nginx-server.yml'
+  with_items:
+    - '{{ nginx.servers }}'
