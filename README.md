@@ -30,7 +30,10 @@ Role Variables
         https: {
           oscp_server: "localhost",
         },
-        webroot: '/usr/local/www/nginx'
+        webroot: '/usr/local/www/nginx',
+        proxy: {
+          host: '10.1.0.20'
+        }
       ]
     }
 

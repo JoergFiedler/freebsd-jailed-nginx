@@ -1,8 +1,8 @@
 ---
 - include: pf.yml
   with_items:
-    - '{{ nginx.pf_rdrs }}'
+    - '{{ nginx_pf_rdrs | default([]) }}'
 
 - include: nginx.yml
   with_items:
-    - '{{ nginx.servers }}'
+    - '{{ nginx_servers }}'

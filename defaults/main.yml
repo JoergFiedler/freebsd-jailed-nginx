@@ -1,19 +1,10 @@
 ---
 # defaults file for jailed_nginx
-nginx: {
-  pf_rdrs: [
-    { ports: ['http', 'https'],
-      ext_ip: '{{ host_net_ext_ip }}',
-      ext_if: '{{ host_net_ext_if }}' }
-  ],
-  servers: [{
-    default: true,
-    name: "localhost",
-    aliases: "127.0.0.1",
-    https: {
-      oscp_server: "localhost",
-    },
-    webroot: '/usr/local/www/nginx',
-    proxy: {}}
-  ]
-}
+nginx_servers: [{
+  default: true,
+  name: "localhost",
+  https: {
+    oscp_server: "localhost",
+  },
+  webroot: '/usr/local/www/nginx'
+}]

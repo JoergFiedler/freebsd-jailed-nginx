@@ -1,15 +1,21 @@
 server {
-  listen       {{ jail_net_ip }}:80{{ ' default_server' if server.default }};
-  {{ 'listen       %s:443 ssl'|format(jail_net_ip) if server.https }}{{ ' default_server' if server.default }};
-{% if server.name %}
-  server_name  {{ server.name }}
-               {{ server.aliases }};
+{% set isDefault = server.default|default(false) %}
+  listen       {{ jail_net_ip }}:80{{ ' default_server' if isDefault else '' }};
+{% if server.https is defined %}
+  listen       {{ jail_net_ip }}:443 ssl{{ ' default_server' if isDefault else '' }};
 {% endif %}
+  server_name  {{ server.name }} {{ server.aliases if server.aliases is defined else '' }};
   server_tokens off;
 
+{% if server.proxy is defined %}
+  proxy_connect_timeout 1s;
+  proxy_timeout 1m;
+  proxy_pass {{ server.proxy.host }}:{{ server.proxy.port | default('80') }};
+{% endif %}
+
+{% if server.webroot is defined %}
   include /usr/local/etc/nginx/includes/{{ server.name }}-*.conf;
 
-{% if server.webroot %}
   root         {{ server.webroot }};
 
   error_page   500 502 503 504  /50x.html;
@@ -24,7 +30,7 @@ server {
 {% endif %}
 
 
-{% if server.https %}
+{% if server.https is defined %}
   ssl_certificate_key       /usr/local/etc/nginx/ssl/{{ server.name }}-key.pem;
   ssl_certificate           /usr/local/etc/nginx/ssl/{{ server.name }}-certbundle.pem;
   ssl_trusted_certificate   /usr/local/etc/nginx/ssl/{{ server.name }}-cachain.pem;

@@ -27,4 +27,4 @@
 
 - include: 'nginx-server.yml'
   with_items:
-    - '{{ nginx.servers }}'
+    - '{{ nginx_servers }}'

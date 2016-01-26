@@ -24,7 +24,7 @@ http {
       '"$http_referer" "$http_user_agent"';
     access_log syslog:server={{ syslogd_server }} virt-host;
 
-{% for server in nginx.servers %}
+{% for server in nginx_servers %}
     include /usr/local/etc/nginx/includes/{{ server.name }}.conf;
 {% endfor %}
 
