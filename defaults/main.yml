@@ -4,7 +4,7 @@ nginx_servers: [{
   default: true,
   name: "localhost",
   https: {
-    oscp_server: "localhost",
+    ocsp_server: "localhost",
   },
   webroot: '/usr/local/www/nginx'
 }]

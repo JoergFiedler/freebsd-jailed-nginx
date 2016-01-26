@@ -1,5 +1,5 @@
 # nat request to oscp server
 nat pass log on {{ host_net_ext_if }} proto tcp \
   from {{ jail_net_ip }} \
-  to {{ server.https.oscp_server }} port { http,https } \
+  to {{ server.https.ocsp_server }} port { http,https } \
   -> {{ host_net_ext_ip }}
