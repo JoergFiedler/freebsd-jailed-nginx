@@ -1,8 +1,12 @@
 ---
-- include: pf.yml tags=nginx
+- include: pf.yml
+  tags:
+    - nginx
   with_items:
     - '{{ nginx_pf_rdrs | default([]) }}'
 
-- include: nginx.yml tags=nginx
+- include: nginx.yml
+  tags:
+    - nginx
   with_items:
     - '{{ nginx_servers }}'
