@@ -8,5 +8,8 @@
   notify:
     - Reload {{ jail_name }} s nginx
 
+- include: 'nginx-server-pf.yml'
+  when: server.proxy is defined
+
 - include: 'nginx-server-https.yml'
   when: server.https is defined
