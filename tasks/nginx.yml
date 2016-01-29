@@ -7,7 +7,7 @@
 
 - name: Copy nginx configuration
   template:
-    src: 'nginx.conf.p2'
+    src: 'nginx.conf.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/nginx.conf'
 
 - name: Create directories

@@ -3,7 +3,7 @@
 
 - name: Copy server configuration
   template:
-    src: 'nginx-server.conf.p2'
+    src: 'nginx-server.conf.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.conf'
   notify:
     - Reload {{ jail_name }} s nginx

@@ -1,7 +1,7 @@
 ---
 - name: Copy pf configuration (rls)
   template:
-    src: 'pf.anchor.rls-jail.conf.p2'
+    src: 'pf.anchor.rls-jail.conf.j2'
     dest: '/etc/pf.anchor.rls-jail.{{ jail_name }}-{{ server.proxy.host }}.conf'
   when: server.proxy is defined
   notify:
