@@ -9,9 +9,9 @@
 
 - name: Add pf configuration to anchor.rls-jail conf
   lineinfile:
-    dest: /etc/pf.anchor.nat-jail.conf
+    dest: /etc/pf.anchor.rls-jail.conf
     state: present
-    line: 'include "/etc/pf.anchor.nat-jail.{{ jail_name }}-{{ server.proxy.host }}.conf"'
+    line: 'include "/etc/pf.anchor.rls-jail.{{ jail_name }}-{{ server.proxy.host }}.conf"'
   when: server.proxy is defined
   notify:
     - Reload pf
