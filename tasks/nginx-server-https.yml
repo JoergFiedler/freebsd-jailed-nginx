@@ -12,7 +12,7 @@
     - '{{ server.name }}-cachain.pem'
     - '{{ server.name }}-dhparam.pem'
   notify:
-  - Reload {{ jail_name }} s nginx
+  - Reload jail s nginx
 
 - name: Copy pf configuration (nat rules)
   template:

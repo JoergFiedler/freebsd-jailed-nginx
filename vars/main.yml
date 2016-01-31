@@ -1,2 +1,7 @@
 ---
 # vars file for jailed_nginx
+server_home: '/srv/{{ server.name }}'
+server_webroot: '/srv/{{ server.name }}/webroot'
+server_home_host_zfs_dataset: '{{ host_zfs_www_dataset }}/{{ server.name }}'
+server_home_host_zfs_dir: '{{ host_zfs_www_dir }}/{{ server.name }}'
+server_webroot_host_zfs_dir: '{{ server_home_host_zfs_dir }}/webroot'

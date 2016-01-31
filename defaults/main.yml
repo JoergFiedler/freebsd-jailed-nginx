@@ -1,10 +1,15 @@
 ---
 # defaults file for jailed_nginx
+host_zfs_www_dataset: '{{ host_srv_dataset }}/www'
+host_zfs_www_dir: '{{ host_srv_dir }}/www'
+
+nginx_pf_rdrs: [{
+  ports: ['http', 'https'],
+  ext_ip: '{{ host_net_ext_ip }}',
+  ext_if: '{{ host_net_ext_if }}'
+}]
 nginx_servers: [{
   default: true,
   name: "localhost",
-  https: {
-    ocsp_server: "localhost",
-  },
-  webroot: '/usr/local/www/nginx'
+  https: { ocsp_server: "localhost" }
 }]

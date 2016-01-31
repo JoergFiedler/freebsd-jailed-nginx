@@ -6,9 +6,12 @@
     src: 'nginx-server.conf.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.conf'
   notify:
-    - Reload {{ jail_name }} s nginx
+    - Reload jail s nginx
 
-- include: 'nginx-server-pf.yml'
+- include: 'nginx-server-webroot.yml'
+  when: server.proxy is not defined
+
+- include: 'nginx-server-proxy.yml'
   when: server.proxy is defined
 
 - include: 'nginx-server-https.yml'
