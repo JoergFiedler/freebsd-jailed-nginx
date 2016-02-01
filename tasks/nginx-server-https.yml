@@ -1,6 +1,4 @@
 ---
-- set_fact: server={{ item }}
-
 - name: Copy server key
   copy:
     src: '{{ item }}'
