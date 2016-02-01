@@ -1,11 +1,10 @@
 ---
 - set_fact: server={{ item }}
-- set_fact: prefix={{ jail_home.stdout }}/usr/local/etc/nginx/ssl
 
 - name: Copy server key
   copy:
     src: '{{ item }}'
-    dest: '{{ prefix }}/{{ item }}'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ item }}'
   with_items:
     - '{{ server.name }}-key.pem'
     - '{{ server.name }}-certbundle.pem'
