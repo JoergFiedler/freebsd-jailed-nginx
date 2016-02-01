@@ -39,5 +39,5 @@
 
 - name: Backup server home with tarsnap
   template: src=tarsnapper.yml.j2
-            dest=/usr/local/etc/tarsnapper.d/{{ server.name}}.yml
+            dest=/usr/local/etc/tarsnapper.d/{{ server.name }}.yml
   when: tarsnap_keyfile is defined

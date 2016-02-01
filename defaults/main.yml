@@ -10,7 +10,7 @@ nginx_pf_rdrs:
     ext_if: '{{ host_net_ext_if }}'
 nginx_servers:
   - default: true,
-    name: "{{ server_name }}"
+    name: '{{ server_name }}'
     aliases: 'www.{{ server_name }}'
     https:
       ocsp_server: "localhost"
