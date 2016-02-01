@@ -1,4 +1,4 @@
 ---
 {{ server_home_host_zfs_dir | replace('/', '_') | replace('.', '_') }}:
   delta: default
-  root: {{ server_home }}
+  root: {{ server_home_host_zfs_dir }}
