@@ -18,6 +18,13 @@
     - 'includes'
     - 'ssl'
 
+- name: Create cache directory
+  file:
+    path: '/var/db/nginx-cache'
+    state: directory
+    owner: 'www'
+    group: 'www'
+
 - name: Enable service
   lineinfile:
     dest: '{{ jail_home.stdout }}/etc/rc.conf'
