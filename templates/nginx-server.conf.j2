@@ -10,7 +10,8 @@ server {
 {% if server.proxy is defined %}
   proxy_set_header X-Real-IP $remote_addr;
   proxy_set_header Host $host;
-  proxy_connect_timeout 1s;
+  proxy_set_header X-Scheme $scheme;
+  proxy_connect_timeout 2s;
   location / {
     proxy_pass http://{{ server.proxy.host }}:{{ server.proxy.port | default('80') }};
   }
