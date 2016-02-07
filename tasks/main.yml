@@ -8,5 +8,3 @@
 - include: nginx.yml
   tags:
     - nginx
-  with_items:
-    - '{{ nginx_servers }}'
