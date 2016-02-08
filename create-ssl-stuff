@@ -5,10 +5,15 @@ echo 'Create SSL key,certs (testing purpose only). Takes a few minutes.'
 openssl dhparam \
   -out dhparam.pem 4096 > /dev/null 2>&1
 
+# new key + certificate request
+openssl req -nodes -new -newkey rsa:2048 -sha256 \
+  --keyout files/server-key.pem -out files/server-key.csr
+
+# self signed cert
 openssl req \
   -nodes \
-  -newkey rsa:2048 \
-  -keyout files/server.key \
+  -key files/server-key.pem \
+  -in files/server-key.csr \
   -out files/cert-bundle.pem \
   -subj "/C=DE/ST=Berlin/L=Berlin/CN=localhost" \
   -days 180 \
