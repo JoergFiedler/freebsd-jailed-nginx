@@ -7,7 +7,7 @@ openssl dhparam \
 
 # new key + certificate request
 openssl req -nodes -new -newkey rsa:2048 -sha256 \
-  --keyout files/server-key.pem -out files/server-key.csr
+  -keyout files/server-key.pem -out files/server-key.csr
 
 # self signed cert
 openssl req \
