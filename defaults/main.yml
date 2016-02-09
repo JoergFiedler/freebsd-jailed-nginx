@@ -11,6 +11,3 @@ nginx_pf_rdrs:
 nginx_servers:
   - default: false,
     name: '{{ server_name }}'
-    aliases: 'www.{{ server_name }}'
-    https:
-      ocsp_server: "localhost"

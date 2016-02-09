@@ -5,6 +5,11 @@
     state: present
     chroot: '{{ jail_home.stdout }}'
 
+- name: Copy fastcgi params
+  copy:
+    src: 'fastcgi_params'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/fastcgi_params'
+
 - name: Copy nginx configuration
   template:
     src: 'nginx.conf.j2'

@@ -1,38 +1,8 @@
-server {
 {% set isDefault = server.default|default(false) %}
-  listen       {{ jail_net_ip }}:80{{ ' default_server' if isDefault else '' }};
-{% if server.https is defined %}
-  listen       {{ jail_net_ip }}:443 ssl{{ ' default_server' if isDefault else '' }};
-{% endif %}
-  server_name  {{ server.name }} {{ server.aliases if server.aliases is defined else '' }};
-  server_tokens off;
-
-{% if server.proxy is defined %}
-  proxy_set_header Host $host;
-  proxy_set_header X-Real-IP $remote_addr;
-  proxy_set_header X-Scheme $scheme;
-  proxy_set_header HTTP_X_FORWARDED_PROTO $scheme;
-  proxy_set_header HTTP_X_FORWARDED_FOR $host;
-  proxy_connect_timeout 2s;
-  location / {
-    proxy_pass http://{{ server.proxy.host }}:{{ server.proxy.port | default('80') }};
-  }
-{% else %}
-  include /usr/local/etc/nginx/includes/{{ server.name }}-*.conf;
-
-  root         {{ server_webroot }};
-
-  error_page   500 502 503 504  /50x.html;
-
-  index  index.php index.html index.htm;
-
-  location = /50x.html {
-      root   /usr/local/www/nginx-dist;
-  }
-{% endif %}
-
-
-{% if server.https is defined %}
+{% set isHttps = server.https|default(false) %}
+{% set scheme = 'https' if isHttps else 'http' %}
+{% set aliases = server_aliases if server_aliases is defined else '' %}
+{% set ssl_directives %}
   ssl_certificate_key       /usr/local/etc/nginx/ssl/{{ server.name }}-key.pem;
   ssl_certificate           /usr/local/etc/nginx/ssl/{{ server.name }}-certbundle.pem;
   ssl_trusted_certificate   /usr/local/etc/nginx/ssl/{{ server.name }}-cachain.pem;
@@ -45,5 +15,68 @@ server {
 
   ssl_stapling              on;
   ssl_stapling_verify       on;
+{% endset %}
+map $http_x_forwarded_proto $is_ssl{
+  default "";
+  "https" "on";
+}
+
+{% if server.force_redirect | default(false) %}
+server {
+  listen {{ jail_net_ip }}:80;
+  server_name {{ server.name }};
+  return 301 {{ scheme }}://www.$server_name$request_uri;
+}
+
+server {
+  listen {{ jail_net_ip }}:443 ssl;
+  server_name {{ server.name }};
+{{ ssl_directives }}
+  return 301 https://www.$server_name$request_uri;
+}
+
+{% if scheme == 'https' %}
+server {
+  listen {{ jail_net_ip }}:80;
+  server_name www.{{ server.name }}{{ aliases }};
+  return 301 https://$server_name$request_uri;
+}
+{% endif %}
+{% endif %}
+
+server {
+  server_name www.{{ server.name }}{{ aliases }};
+  server_tokens off;
+{% if scheme != 'https' %}
+  listen {{ jail_net_ip }}:80;
+{% else %}
+  listen {{ jail_net_ip }}:443 ssl;
+{{ ssl_directives }}
+{% endif %}
+
+{% if server.proxy is defined %}
+  proxy_set_header Host               $host;
+  proxy_set_header X-Real-IP          $remote_addr;
+  proxy_set_header X-Forwarded-Proto  $scheme;
+  proxy_set_header X-Forwarded-For    $remote_addr;
+
+  proxy_connect_timeout 2s;
+
+  location / {
+    proxy_pass http://{{ server.proxy.host }}:{{ server.proxy.port | default('80') }};
+  }
+
+{% else %}
+  include /usr/local/etc/nginx/includes/{{ server.name }}-*.conf;
+
+  root         {{ server_webroot }};
+
+  error_page   500 502 503 504  /50x.html;
+
+  index  index.php index.html index.htm;
+
+  location = /50x.html {
+      root   /usr/local/www/nginx-dist;
+  }
 {% endif %}
 }
