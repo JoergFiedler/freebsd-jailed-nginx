@@ -9,7 +9,7 @@ nginx_pf_rdrs:
     ext_ip: '{{ host_net_ext_ip }}'
     ext_if: '{{ host_net_ext_if }}'
 nginx_servers:
-  - default: true,
+  - default: false,
     name: '{{ server_name }}'
     aliases: 'www.{{ server_name }}'
     https:
