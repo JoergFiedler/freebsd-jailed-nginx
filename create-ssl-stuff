@@ -37,7 +37,7 @@ cat <<EOF
     are chained together
 
     1) cachain
-     > cat intermediate.ca root.ca > cachain.pem
+     > cat intermediate.ca > cachain.pem
     2) cert-bundle.pem
      > cat server.cert cachain.pem > cert-bundle.pem
 EOF
