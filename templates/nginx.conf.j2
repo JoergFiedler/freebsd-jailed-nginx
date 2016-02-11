@@ -24,7 +24,6 @@ http {
     access_log syslog:server={{ syslogd_server }} virt-host;
 
     fastcgi_cache_path /var/cache/nginx levels=1:2 keys_zone=z_nginx:8m max_size=1G inactive=10m;
-    set $skip_cache 0;
 
 {% for server in nginx_servers %}
     include /usr/local/etc/nginx/includes/{{ server.name }}.conf;
