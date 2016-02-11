@@ -1,7 +1,7 @@
 {% set isDefault = server.default|default(false) %}
 {% set isHttps = server.https|default(false) %}
 {% set scheme = 'https' if isHttps else 'http' %}
-{% set aliases = ' '.append(server.aliases) if server.aliases is defined else '' %}
+{% set aliases = ' ' + server.aliases if server.aliases is defined else '' %}
 {% set ssl_directives %}
   add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
   add_header X-Frame-Options "DENY";
