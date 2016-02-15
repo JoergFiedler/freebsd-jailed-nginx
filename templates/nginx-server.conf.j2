@@ -4,7 +4,7 @@
 {% set aliases = ' ' + server.aliases if server.aliases is defined else '' %}
 {% set ssl_directives %}
   add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
-  add_header X-Frame-Options "DENY";
+  add_header X-Frame-Options "SAMEORIGIN";
 
   ssl_certificate_key       /usr/local/etc/nginx/ssl/{{ server.name }}-key.pem;
   ssl_certificate           /usr/local/etc/nginx/ssl/{{ server.name }}-certbundle.pem;
