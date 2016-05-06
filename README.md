@@ -41,7 +41,7 @@ Role Variables
 Dependencies
 ------------
 
-- [JoergFiedler.freebsd-jailed](https://galaxy.ansible.com/detail#/role/6599)
+- [JoergFiedler.freebsd-jailed-sftp](https://galaxy.ansible.com/JoergFiedler/freebsd-jailed-sftp/)
 
 Example Playbook
 ----------------
