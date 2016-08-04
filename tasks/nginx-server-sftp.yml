@@ -1,0 +1,51 @@
+---
+- debug: msg={{ server }}
+
+- name: Create ssh user
+  lineinfile:
+    dest: '{{ jail_home.stdout }}/etc/master.passwd'
+    state: present
+    regexp: '^{{ server.sftp.user }}:'
+    line: '{{ server.sftp.user }}:*:{{ server.sftp.uuid }}:80::0:0:Remote (sftp) User:{{ server.sftp.home }}:/usr/sbin/nologin'
+  register: user
+
+- name: Update user database
+  command: pwd_mkdb -p -d {{ jail_home.stdout }}/etc {{ jail_home.stdout }}/etc/master.passwd
+  when: user.changed
+
+- name: Copy public half of the key
+  copy:
+    src: '{{ server.sftp.authorized_keys }}'
+    dest: '{{ jail_home.stdout }}/etc/ssh/authorized_key_{{ server.sftp.user }}'
+
+- name: Copy pf configuration (rdr rules)
+  template:
+    src: 'pf.anchor.rdr-jail-sftp.conf.j2'
+    dest: '/etc/pf.anchor.rdr-jail.{{ jail_name }}-sftp-{{ server.name }}.conf'
+  notify:
+    - Reload pf
+
+- name: Add pf configuration to anchor.rdr-jail conf
+  lineinfile:
+    dest: '/etc/pf.anchor.rdr-jail.conf'
+    state: present
+    line: 'include "/etc/pf.anchor.rdr-jail.{{ jail_name }}-sftp-{{ server.name }}.conf"'
+  notify:
+    - Reload pf
+
+- name: Add server specific settings to sshd
+  blockinfile:
+    dest: '{{ jail_home.stdout }}/etc/ssh/sshd_config'
+    block: |
+      Match user {{ server.sftp.user }}
+        AuthorizedKeysFile /etc/ssh/authorized_key_{{ server.sftp.user }}
+        ChrootDirectory {{ server.sftp.home }}
+    marker: "# {mark} {{server.sftp.user}} ANSIBLE MANAGED BLOCK"
+
+- name: Activate sshd
+  lineinfile:
+    dest: '{{ jail_home.stdout }}/etc/rc.conf'
+    state: present
+    regexp: '^sshd_enable='
+    line: 'sshd_enable="YES"'
+

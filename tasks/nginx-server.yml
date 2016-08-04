@@ -1,5 +1,6 @@
 ---
-- set_fact: server={{ item }}
+- set_fact: server_name={{ item.name }}
+- set_fact: server={{ nginx_servers_defaults|combine(item, recursive=True) }}
 
 - name: Copy server configuration
   template:
@@ -8,11 +9,21 @@
   notify:
     - Reload jail s nginx
 
+- name: Inlude server config into nginx.conf
+  lineinfile:
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/nginx.conf'
+    state: present
+    line: '    include /usr/local/etc/nginx/includes/{{ server_name }}.conf;'
+    insertbefore: '^}'
+
 - include: 'nginx-server-https.yml'
   when: server.https is defined
 
 - include: 'nginx-server-webroot.yml'
   when: server.proxy is not defined
+
+- include: 'nginx-server-sftp.yml'
+  when: server.sftp is defined
 
 - include: 'nginx-server-proxy.yml'
   when: server.proxy is defined

@@ -1,7 +1,8 @@
 {% set isDefault = server.default|default(false) %}
 {% set isHttps = server.https|default(false) %}
 {% set scheme = 'https' if isHttps else 'http' %}
-{% set aliases = ' ' + server.aliases if server.aliases is defined else '' %}
+{% set aliases = server.aliases if server.aliases is defined else '' %}
+{% set aliases = aliases + ' www.' + server.name if server.force_www is defined else aliases %}
 {% set ssl_directives %}
   add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
   add_header X-Frame-Options "SAMEORIGIN";
@@ -24,31 +25,33 @@ map $http_x_forwarded_proto $is_ssl{
   "https" "on";
 }
 
-{% if server.force_redirect | default(false) %}
+{% if server.force_www | default(false) %}
 server {
   listen {{ jail_net_ip }}:80;
-  server_name {{ server.name }};
+  server_name {{ server_name }};
   return 301 {{ scheme }}://www.$server_name$request_uri;
 }
 
 server {
   listen {{ jail_net_ip }}:443 ssl;
-  server_name {{ server.name }};
+  server_name {{ server_name }};
 {{ ssl_directives }}
   return 301 https://www.$server_name$request_uri;
 }
+{% endif %}
 
+{% if server.force_redirect | default(false) %}
 {% if scheme == 'https' %}
 server {
   listen {{ jail_net_ip }}:80;
-  server_name www.{{ server.name }}{{ aliases }};
+  server_name {{ server_name }} {{ aliases }};
   return 301 https://$server_name$request_uri;
 }
 {% endif %}
 {% endif %}
 
 server {
-  server_name www.{{ server.name }}{{ aliases }};
+  server_name {{ server.name }} {{ aliases }};
   server_tokens off;
 {% if scheme != 'https' %}
   listen {{ jail_net_ip }}:80;
@@ -72,7 +75,7 @@ server {
 {% else %}
   include /usr/local/etc/nginx/includes/{{ server.name }}-*.conf;
 
-  root         {{ server_webroot }};
+  root         {{ server.webroot }};
 
   error_page   500 502 503 504  /50x.html;
 

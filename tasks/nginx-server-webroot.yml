@@ -26,6 +26,8 @@
 - name: Copy index.html
   copy: src={{ jail_home.stdout }}/usr/local/www/nginx-dist/index.html
         remote_src=yes
+        owner={{ server.sftp.uuid }}
+        group=www
         dest={{ server_webroot_host_zfs_dir }}/index.html
         force=no
 
@@ -40,4 +42,5 @@
 - name: Backup server home with tarsnap
   template: src=tarsnapper.yml.j2
             dest=/usr/local/etc/tarsnapper.d/{{ server.name }}.yml
-  when: tarsnap_keyfile is defined
+  when: nginx_tarsnap_enabled
+

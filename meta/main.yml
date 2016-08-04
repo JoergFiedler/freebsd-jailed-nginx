@@ -17,4 +17,4 @@ galaxy_info:
     - nginx
 allow_duplicates: yes
 dependencies:
-  - { role: JoergFiedler.freebsd-jailed-sftp }
+  - { role: JoergFiedler.freebsd-jailed }

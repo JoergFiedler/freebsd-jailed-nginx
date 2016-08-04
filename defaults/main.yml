@@ -1,13 +1,21 @@
 ---
 # defaults file for jailed_nginx
-server_name: 'localhost'
 host_zfs_www_dataset: '{{ host_srv_dataset }}/www'
 host_zfs_www_dir: '{{ host_srv_dir }}/www'
 
+nginx_tarsnap_enabled: '{{ tarsnap_enabled }}'
 nginx_pf_rdrs:
   - ports: ['http', 'https']
     ext_ip: '{{ host_net_ext_ip }}'
     ext_if: '{{ host_net_ext_if }}'
-nginx_servers:
-  - default: false,
-    name: '{{ server_name }}'
+nginx_servers_defaults: {
+  default: false,
+  webroot: '{{ server_webroot }}',
+  sftp: {
+    user: '{{ server_sftp_user }}',
+    uuid: '{{ server_sftp_uuid }}',
+    authorized_keys: '{{ server_sftp_authorized_keys }}',
+    home: '{{ server_home }}',
+    port: '{{ server_sftp_port }}'
+  }
+}

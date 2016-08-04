@@ -5,6 +5,10 @@ This role provides a jailed nginx server that listens on `localhost:{80,443}` fo
 
 To see this role in action, have a look at [this project of mine](https://github.com/JoergFiedler/freebsd-ansible-demo).
 
+It may be used by other roles to server Wordpress or Joomla installations. To access the webroot directory a SFTP server is also configured, which is secured by public key authentication.
+
+This role can be used to create SSL terminating proxy that forwards traffic to domain specific jails.
+
 Requirements
 ------------
 
@@ -14,44 +18,60 @@ You will find a sample project which uses this role [here](https://github.com/Jo
 
 Role Variables
 --------------
+##### nginx_tarsnap_enabled
+If this servers nginx webroot should be backed up using tarsnap. Has to be enabled on te jail's host. Default: `false`.
 
-##### nginx
+##### default
+If this server should handle all requests which are not meant for any of the configured servers. Default `false`.
 
-    nginx: {
-      pf_rdrs: [
-        { ports: ['http', 'https'],
-          ext_ip: '{{ host_net_ext_ip }}',
-          ext_if: '{{ host_net_ext_if }}' }
-      ],
-      servers: [{
-        default: true,
-        name: "localhost",
-        aliases: "127.0.0.1",
-        https: {
-          oscp_server: "localhost",
-        },
-        webroot: '/usr/local/www/nginx',
-        proxy: {
-          host: '10.1.0.20'
-        }
-      ]
-    }
+##### name
+The name domain name of this server. Default: `none`.
 
+##### https.oscp
+If set https is enabled for this server and all non-https request are redirected to their secure counterparts. Specifies the OCSP server to ask for caching. Default: `none`.
+
+You have to provide a set of files which contain valid SSL certificates.
+   - files/{{ name }}/-key.pem
+   - files/{{ name }}/-cachain.pem
+   - files/{{ name }}/-certbundle.pem
+   - files/{{ name }}/-dhparam.pem
+
+##### webroot
+The webroot containing the files to serve for this server. Default: `'/srv/{{ name }}/webroot'`.
+
+##### force_www
+If the server should redirect to `www` domain names. Default: `false`.
+
+##### sftp.user
+The sftp user's  name. Default: `'sftp_{{ name | truncate(5, True, "") }}'`.
+
+##### sftp.uuid
+The sftp user's uuid. Default: `5000`.
+
+##### sftp.home
+The user's home directory. SSHD will change root to this diretory. Default: `'/srv/{{ name }}'`.
+
+##### sftp.port
+The external port which should be redirected to the jail using this role. Default: `10022`.
+
+##### sftp.authorized_keys
+The public key which should be used to authenticate the user. Default: `'{{ host_sshd_authorized_keys_file }}'`.
 
 Dependencies
 ------------
 
-- [JoergFiedler.freebsd-jailed-sftp](https://galaxy.ansible.com/JoergFiedler/freebsd-jailed-sftp/)
+- [JoergFiedler.freebsd-jailed](https://galaxy.ansible.com/JoergFiedler/freebsd-jailed/)
 
 Example Playbook
 ----------------
 
     - { role: JoergFiedler.freebsd-jailed-nginx,
-        tags: ['nginx'],
-        use_ssmtp: true,
-        use_syslogd_server: true,
+        tags: ['_nginx'],
         jail_name: 'nginx',
-        jail_net_ip: '10.1.0.5' }
+        jail_net_ip: '10.1.0.3',
+        nginx_servers: [
+        { default: true,
+          name: 'localhost' } ] }
 
 License
 -------

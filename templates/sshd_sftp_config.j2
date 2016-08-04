@@ -1,0 +1,24 @@
+AllowUsers sftp_*
+Port 22
+ListenAddress {{ jail_net_ip }}
+Protocol 2
+MaxStartups 3:50:5
+MaxAuthTries 2
+LoginGraceTime 15
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+UseDNS no
+UsePAM no
+ClientAliveInterval 30
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+
+ForceCommand internal-sftp
+AllowTcpForwarding no
+AllowAgentForwarding no
+PermitTunnel no
+PermitTTY no
+X11Forwarding no
+
+Subsystem  sftp  /usr/libexec/sftp-server -u 0007
+
