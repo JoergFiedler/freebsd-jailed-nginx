@@ -28,13 +28,13 @@ map $http_x_forwarded_proto $is_ssl{
 {% if server.force_www | default(false) %}
 server {
   listen {{ jail_net_ip }}:80;
-  server_name {{ server_name }};
+  server_name {{ server.name }};
   return 301 {{ scheme }}://www.$server_name$request_uri;
 }
 
 server {
   listen {{ jail_net_ip }}:443 ssl;
-  server_name {{ server_name }};
+  server_name {{ server.name }};
 {{ ssl_directives }}
   return 301 https://www.$server_name$request_uri;
 }
@@ -44,7 +44,7 @@ server {
 {% if scheme == 'https' %}
 server {
   listen {{ jail_net_ip }}:80;
-  server_name {{ server_name }} {{ aliases }};
+  server_name {{ server.name }} {{ aliases }};
   return 301 https://$server_name$request_uri;
 }
 {% endif %}

@@ -33,14 +33,10 @@
   notify:
     - Reload pf
 
-- name: Add server specific settings to sshd
-  blockinfile:
+- name: Set global sftp/ssh configuration
+  template:
+    src: 'sshd_sftp_config.j2'
     dest: '{{ jail_home.stdout }}/etc/ssh/sshd_config'
-    block: |
-      Match user {{ server.sftp.user }}
-        AuthorizedKeysFile /etc/ssh/authorized_key_{{ server.sftp.user }}
-        ChrootDirectory {{ server.sftp.home }}
-    marker: "# {mark} {{server.sftp.user}} ANSIBLE MANAGED BLOCK"
 
 - name: Activate sshd
   lineinfile:

@@ -5,16 +5,9 @@
 - name: Copy server configuration
   template:
     src: 'nginx-server.conf.j2'
-    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.conf'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.server.conf'
   notify:
     - Reload jail s nginx
-
-- name: Inlude server config into nginx.conf
-  lineinfile:
-    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/nginx.conf'
-    state: present
-    line: '    include /usr/local/etc/nginx/includes/{{ server_name }}.conf;'
-    insertbefore: '^}'
 
 - include: 'nginx-server-https.yml'
   when: server.https is defined
@@ -23,7 +16,7 @@
   when: server.proxy is not defined
 
 - include: 'nginx-server-sftp.yml'
-  when: server.sftp is defined
+  when: server.proxy is not defined
 
 - include: 'nginx-server-proxy.yml'
   when: server.proxy is defined
