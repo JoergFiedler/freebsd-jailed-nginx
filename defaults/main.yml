@@ -10,6 +10,7 @@ nginx_pf_rdrs:
     ext_if: '{{ host_net_ext_if }}'
 nginx_servers_defaults: {
   default: false,
+  name: 'localhost',
   webroot: '{{ server_webroot }}',
   sftp: {
     user: '{{ server_sftp_user }}',

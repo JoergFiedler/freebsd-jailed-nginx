@@ -20,3 +20,6 @@
 
 - include: 'nginx-server-proxy.yml'
   when: server.proxy is defined
+
+- include: 'nginx-server-php-fpm.yml'
+  when: server.php is defined

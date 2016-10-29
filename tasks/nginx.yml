@@ -29,6 +29,7 @@
   template:
     src: 'sshd_sftp_config.j2'
     dest: '{{ jail_home.stdout }}/etc/ssh/sshd_sftp_config'
+    force: no
 
 - name: Use ssh/sftp configuration
   lineinfile:

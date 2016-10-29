@@ -22,12 +22,15 @@
 - name: Create webroot directory for server
   file: path={{ server_webroot_host_zfs_dir }}
         state=directory
+        owner={{ server.sftp.uuid }}
+        group=www
 
 - name: Copy index.html
   copy: src={{ jail_home.stdout }}/usr/local/www/nginx-dist/index.html
         remote_src=yes
         owner={{ server.sftp.uuid }}
         group=www
+        mode=0666
         dest={{ server_webroot_host_zfs_dir }}/index.html
         force=no
 
