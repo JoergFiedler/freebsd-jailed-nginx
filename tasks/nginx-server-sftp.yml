@@ -33,10 +33,15 @@
   notify:
     - Reload pf
 
-- name: Set global sftp/ssh configuration
-  template:
-    src: 'sshd_sftp_config.j2'
-    dest: '{{ jail_home.stdout }}/etc/ssh/sshd_config'
+- name: Add user specific sftp/ssh configuration
+  blockinfile:
+    dest: '{{ jail_home.stdout }}/etc/ssh/sshd_sftp_config'
+    insertafter: EOF
+    marker: '# {mark} {{ server.sftp.user }}'
+    block: |
+      Match user {{ server.sftp.user }}
+        AuthorizedKeysFile /etc/ssh/authorized_key_{{ server.sftp.user }}
+        ChrootDirectory {{ server.sftp.home }}
 
 - name: Activate sshd
   lineinfile:

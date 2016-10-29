@@ -22,7 +22,3 @@ X11Forwarding no
 
 Subsystem  sftp  /usr/libexec/sftp-server -u 0007
 
-Match user {{ server.sftp.user }}
-  AuthorizedKeysFile /etc/ssh/authorized_key_{{ server.sftp.user }}
-  ChrootDirectory {{ server.sftp.home }}
-

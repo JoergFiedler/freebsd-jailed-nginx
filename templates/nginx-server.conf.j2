@@ -57,6 +57,7 @@ server {
   listen {{ jail_net_ip }}:80;
 {% else %}
   listen {{ jail_net_ip }}:443 ssl;
+  set $skip_cache 0;
 {{ ssl_directives }}
 {% endif %}
 

@@ -5,11 +5,6 @@
     state: present
     chroot: '{{ jail_home.stdout }}'
 
-- name: Copy fastcgi params
-  copy:
-    src: 'fastcgi_params'
-    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/fastcgi_params'
-
 - name: Copy nginx configuration
   template:
     src: 'nginx.conf.j2'
@@ -29,6 +24,24 @@
     state: directory
     owner: 'www'
     group: 'www'
+
+- name: Set global sftp/ssh configuration
+  template:
+    src: 'sshd_sftp_config.j2'
+    dest: '{{ jail_home.stdout }}/etc/ssh/sshd_sftp_config'
+
+- name: Use ssh/sftp configuration
+  lineinfile:
+    dest: '{{ jail_home.stdout }}/etc/rc.conf'
+    state: present
+    force: no
+    regexp: '^sshd_flags='
+    line: 'sshd_flags="-f /etc/ssh/sshd_sftp_config"'
+
+- name: Copy fastcgi params
+  copy:
+    src: 'fastcgi_params'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/fastcgi_params'
 
 - name: Enable service
   lineinfile:
