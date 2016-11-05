@@ -3,7 +3,7 @@ prefix = {{ server_home }}
 listen = /var/run/fpm-{{ server_name }}.sock
 listen.owner = www
 listen.group = www
-user = {{ sftp_user | default('www') }}
+user = {{ server.sftp.user | default('www') }}
 group = www
 
 pm = dynamic
@@ -18,6 +18,7 @@ access.format = "%t \"%m %r%Q%q\" %s %f %{mili}d %{kilo}M %{user}C%% %{system}C%
 php_admin_value[upload_tmp_dir] = {{ server_webroot }}/tmp
 php_admin_value[sys_temp_dir] = {{ server_webroot }}/tmp
 php_admin_value[open_basedir] = {{ server_webroot }}:/dev/urandom
+php_admin_value[date.timezone] = {{ host_timezone }}
 php_admin_value[session.save_path] = {{ server_webroot }}/tmp
 php_admin_value[session.hash_function] = sha512
 

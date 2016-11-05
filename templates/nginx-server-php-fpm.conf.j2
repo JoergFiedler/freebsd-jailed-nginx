@@ -1,3 +1,5 @@
+set $skip_cache 0;
+
 client_max_body_size  50M;
 
 add_header X-Proxy-Cache $upstream_cache_status;

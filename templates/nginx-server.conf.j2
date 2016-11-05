@@ -73,7 +73,6 @@ server {
   }
 
 {% else %}
-  set $skip_cache 0;
   include /usr/local/etc/nginx/includes/{{ server.name }}-*.conf;
 
   root         {{ server.webroot }};
