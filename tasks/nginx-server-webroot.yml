@@ -32,7 +32,7 @@
         group=www
         mode=0666
         dest={{ server_webroot_host_zfs_dir }}/index.html
-        force=no
+  when: jail_created|changed
 
 - name: Configure jail to mount file system from host
   mount: name={{ jail_home.stdout }}{{ server_home }}

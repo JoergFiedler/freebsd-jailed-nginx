@@ -6,7 +6,6 @@
   with_items:
     - '{{ server.name }}-key.pem'
     - '{{ server.name }}-certbundle.pem'
-    - '{{ server.name }}-cachain.pem'
     - '{{ server.name }}-dhparam.pem'
   notify:
   - Reload jail s nginx

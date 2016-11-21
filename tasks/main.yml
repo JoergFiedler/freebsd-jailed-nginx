@@ -4,6 +4,7 @@
     - nginx
   with_items:
     - '{{ nginx_pf_rdrs | default([]) }}'
+  when: nginx_pf_redirect
 
 - include: nginx.yml
   tags:

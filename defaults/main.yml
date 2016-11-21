@@ -4,6 +4,8 @@ host_zfs_www_dataset: '{{ host_srv_dataset }}/www'
 host_zfs_www_dir: '{{ host_srv_dir }}/www'
 
 nginx_tarsnap_enabled: '{{ tarsnap_enabled }}'
+
+nginx_redirect: true
 nginx_pf_rdrs:
   - ports: ['http', 'https']
     ext_ip: '{{ host_net_ext_ip }}'
@@ -12,6 +14,9 @@ nginx_servers_defaults: {
   default: false,
   name: 'localhost',
   webroot: '{{ server_webroot }}',
+  force_www: false,
+  force_https_redirect: false,
+  php_fpm_enabled: false,
   sftp: {
     user: '{{ server_sftp_user }}',
     uuid: '{{ server_sftp_uuid }}',

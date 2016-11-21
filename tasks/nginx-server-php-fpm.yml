@@ -62,13 +62,20 @@
   template: src=newsyslog.conf.d/fpm-pool-access.p2
     dest={{ jail_home.stdout }}/usr/local/etc/newsyslog.conf.d/php-fpm-{{ server_name }}
 
+- name: Create php-fpm tmp directory
+  file: path={{ server_webroot_host_zfs_dir }}/tmp
+        owner={{ server.sftp.uuid }}
+        group=www
+        mode=0750
+        state=directory
+
 - name: Copy index.php
   copy: src=index.php
         dest={{ server_webroot_host_zfs_dir }}/index.php
         owner={{ server.sftp.uuid }}
         group=www
         mode=0666
-        force=no
+  when: jail_created|changed
 
 - name: Copy nginx fastcgi configuration
   template: src=nginx-server-fastcgi.conf.j2

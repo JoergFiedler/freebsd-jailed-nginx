@@ -9,7 +9,6 @@
 
   ssl_certificate_key       /usr/local/etc/nginx/ssl/{{ server.name }}-key.pem;
   ssl_certificate           /usr/local/etc/nginx/ssl/{{ server.name }}-certbundle.pem;
-  ssl_trusted_certificate   /usr/local/etc/nginx/ssl/{{ server.name }}-cachain.pem;
   ssl_dhparam               /usr/local/etc/nginx/ssl/{{ server.name }}-dhparam.pem;
 
   ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
@@ -40,7 +39,7 @@ server {
 }
 {% endif %}
 
-{% if server.force_redirect | default(false) %}
+{% if server.force_https_redirect %}
 {% if scheme == 'https' %}
 server {
   listen {{ jail_net_ip }}:80;

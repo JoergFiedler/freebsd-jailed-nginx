@@ -22,4 +22,4 @@
   when: server.proxy is defined
 
 - include: 'nginx-server-php-fpm.yml'
-  when: server.php is defined
+  when: server.php_fpm_enabled is defined
