@@ -10,6 +10,7 @@
   - php56-dom
   - php56-filter
   - php56-gd
+  - php56-iconv
   - php56-json
   - php56-mbstring
   - php56-mcrypt
