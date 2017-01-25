@@ -17,6 +17,6 @@ fastcgi_cache_valid 200 302 5m;
 fastcgi_cache_valid any 1m;
 
 location ~ [^/]\.php(/|$) {
-  include /usr/local/etc/nginx/includes/{{ server_name }}.fastcgi.conf;
+  include /usr/local/etc/nginx/includes/{{ server.name }}.fastcgi.conf;
 }
 

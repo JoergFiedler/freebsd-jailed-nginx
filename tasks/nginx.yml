@@ -51,7 +51,6 @@
     regexp: '^nginx_enable='
     line: 'nginx_enable="YES"'
 
-- debug: msg={{nginx_servers}}
-- include: 'nginx-server.yml'
+- include: nginx-server.yml nginx_server={{item}}
   with_items:
     - '{{ nginx_servers }}'

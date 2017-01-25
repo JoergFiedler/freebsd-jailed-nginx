@@ -1,6 +1,6 @@
-[{{ server_name }}]
+[{{ server.name }}]
 prefix = {{ server_home }}
-listen = /var/run/fpm-{{ server_name }}.sock
+listen = /var/run/fpm-{{ server.name }}.sock
 listen.owner = www
 listen.group = www
 user = {{ server.sftp.user | default('www') }}

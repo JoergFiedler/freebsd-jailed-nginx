@@ -1,6 +1,6 @@
 ---
-- set_fact: server_name={{ item.name }}
-- set_fact: server={{ nginx_servers_defaults|combine(item, recursive=True) }}
+- set_fact: server_name={{ nginx_server.name }}
+- set_fact: server={{ nginx_servers_defaults|combine(nginx_server, recursive=True) }}
 
 - name: Copy server configuration
   template:
@@ -16,10 +16,10 @@
   when: server.proxy is not defined
 
 - include: 'nginx-server-sftp.yml'
-  when: server.proxy is not defined
+  when: server.sftp is defined
 
 - include: 'nginx-server-proxy.yml'
   when: server.proxy is defined
 
 - include: 'nginx-server-php-fpm.yml'
-  when: server.php_fpm_enabled is defined
+  when: server.php_fpm_enabled

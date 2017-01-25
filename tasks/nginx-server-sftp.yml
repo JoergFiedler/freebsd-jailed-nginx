@@ -1,6 +1,4 @@
 ---
-- debug: msg={{ server }}
-
 - name: Create ssh user
   lineinfile:
     dest: '{{ jail_home.stdout }}/etc/master.passwd'

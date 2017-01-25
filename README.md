@@ -22,7 +22,7 @@ Role Variables
 If this the webroot of this server should be backed up using tarsnap. Has to be enabled on the host itself (`tarsnap_enabled: true`). Default: `{{ tarsnap_enabled }}`.
 
 ##### nginx_pf_redirect
-If set to `true` traffic to http(s) ports is forwarded to this jails nginx server. Default: `true`.
+If set to `true` traffic to http(s) ports is forwarded to this jails nginx server. Default: `false`.
 
 The default configuration will forward all traffic directed to port 80 and 443 of the hosts external interface to this jail. This configuration can be changed using the `nginx_pf_rdrs` variable.
 
@@ -60,14 +60,14 @@ You have to provide a set of files which contain valid SSL certificates.
    - files/{{ name }}/-certbundle.pem
    - files/{{ name }}/-dhparam.pem
 
-##### php_fpm_enabled
+##### php
 Set to true to install and enable `php-fpm` package. If enabled the following php packages will be installed (php56, php56-ctype, php56-curl, php56-dom, php56-filter, php56-gd, php56-json, php56-mbstring, php56-mcrypt, php56-mysql, php56-mysqli, php56-opcache, php56-openssl, php56-tidy, php56-tokenizer, php56-simplexml, php56-session, php56-sqlite3, php56-zip, php56-zlib, php56-xml)
 
-##### force_https_redirect
+##### force_https
 Set to `true` if the server should redirect all non-https request to their https counterparts. Default: `false`.
 
 ##### force_www
-If the server should redirect to `www` domain names. If set to `true` all requests to `name` will be redirected to www subdomain. The www alias will be added automatically. Default: `false`.
+If the server should redirect to `www` domain names. If set to `true` all requests to `name` will be redirected to www subdomain. The www alias will be added automatically. Default: `true`.
 
 ##### sftp.user
 The sftp user's  name. Default: `'sftp_{{ name | truncate(5, True, "") }}'`.
@@ -130,14 +130,14 @@ Configure nginx to serve multiple static websides.
           ]
         }
 
-Run a php enable webside inside a jail.
+Run a php enable website inside a jail.
 
     - { role: phpside,
           tags: ['_phpside'],
           jail_name: 'phpside',
           nginx_servers: [{
               name: 'example.com',
-              php: true,
+              php_fpm_enabled: true,
               sftp: {
                 authorized_keys: 'file/key.pub',
                 port: 40206

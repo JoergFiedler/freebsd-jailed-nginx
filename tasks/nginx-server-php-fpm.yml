@@ -55,13 +55,13 @@
 
 - name: Copy fpm pool configuration
   template: src=nginx-server-php-fpm-pool.conf.p2
-    dest={{ jail_home.stdout }}/usr/local/etc/fpm.d/php-fpm-pool-{{ server_name }}.conf
+    dest={{ jail_home.stdout }}/usr/local/etc/fpm.d/php-fpm-pool-{{ server.name }}.conf
   notify:
   - Reload {{ jail_name }} s php-fpm
 
 - name: Copy logrotate config
   template: src=newsyslog.conf.d/fpm-pool-access.p2
-    dest={{ jail_home.stdout }}/usr/local/etc/newsyslog.conf.d/php-fpm-{{ server_name }}
+    dest={{ jail_home.stdout }}/usr/local/etc/newsyslog.conf.d/php-fpm-{{ server.name }}
 
 - name: Create php-fpm tmp directory
   file: path={{ server_webroot_host_zfs_dir }}/tmp
@@ -72,6 +72,7 @@
 
 - name: Copy index.php
   copy: src=index.php
+        force=no
         dest={{ server_webroot_host_zfs_dir }}/index.php
         owner={{ server.sftp.uuid }}
         group=www
@@ -80,12 +81,12 @@
 
 - name: Copy nginx fastcgi configuration
   template: src=nginx-server-fastcgi.conf.j2
-            dest={{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server_name }}.fastcgi.conf
+            dest={{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.fastcgi.conf
   notify:
   - Reload jail s nginx
 
 - name: Copy nginx configuration
   template: src=nginx-server-php-fpm.conf.j2
-            dest={{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server_name }}-php-fpm.conf
+            dest={{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}-php-fpm.conf
   notify:
   - Reload jail s nginx
