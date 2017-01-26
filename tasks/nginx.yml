@@ -51,6 +51,9 @@
     regexp: '^nginx_enable='
     line: 'nginx_enable="YES"'
 
+- include: nginx-letsencrypt.yml
+  when: nginx_letsencrypt_enabled
+
 - include: nginx-server.yml nginx_server={{item}}
   with_items:
     - '{{ nginx_servers }}'

@@ -1,0 +1,51 @@
+---
+- name: Install additional packages
+  pkgng:
+    name: '{{ item }}'
+    state: present
+    chroot: '{{ jail_home.stdout }}'
+  with_items:
+    - acme-client
+
+- name: Create SSL key directory
+  file:
+    path: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl'
+    state: directory
+
+- name: Create challenge directory
+  file:
+    path: '{{ jail_home.stdout }}/var/www/.well-known/acme-challenge'
+    state: directory
+
+- name: Create bin directory
+  file:
+    path: '{{ jail_home.stdout }}/usr/local/bin'
+    state: directory
+
+- name: Copy acme-client script
+  template:
+    src: 'acme-client-weekly.j2.sh'
+    mode: 0700
+    dest: '{{ jail_home.stdout }}/usr/local/bin/acme-client-weekly.sh'
+
+- name: Make sure acme-client domain list file
+  copy:
+    force: no
+    content: ''
+    dest: '{{ jail_home.stdout }}{{ nginx_letsencrypt_domains_file }}'
+
+- name: Make sure /etc/periodic.conf exists
+  file:
+    force: no
+    content: ''
+    dest: '{{ jail_home.stdout }}/etc/periodic.conf'
+
+- name: Refresh certificates using periodic.conf
+  blockinfile:
+    dest: '{{ jail_home.stdout }}/etc/periodic.conf'
+    state: present
+    marker: '{mark} run acme-client (Lets Encrypt) every week'
+    block: |
+      weekly_acme_client_enable="YES"
+      weekly_acme_client_renewscript="/usr/local/bin/acme-client-weekly.sh"
+      weekly_acme_client_deployscript="service nginx reload"

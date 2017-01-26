@@ -4,6 +4,8 @@ host_zfs_www_dataset: '{{ host_srv_dataset }}/www'
 host_zfs_www_dir: '{{ host_srv_dir }}/www'
 
 nginx_tarsnap_enabled: '{{ tarsnap_enabled }}'
+nginx_letsencrypt_enabled: false
+nginx_letsencrypt_domains_file: '/usr/local/etc/acme/domains.txt'
 
 nginx_pf_redirect: false
 nginx_pf_rdrs:
@@ -11,17 +13,19 @@ nginx_pf_rdrs:
     ext_ip: '{{ host_net_ext_ip }}'
     ext_if: '{{ host_net_ext_if }}'
 nginx_servers_defaults: {
+  aliases: '',
   default: false,
-  name: 'localhost',
-  webroot: '{{ server_webroot }}',
-  force_www: true,
   force_https: false,
+  force_www: true,
+  name: 'localhost',
   php_fpm_enabled: false,
+  sftp_enabled: false,
   sftp: {
     user: '{{ server_sftp_user }}',
     uuid: '{{ server_sftp_uuid }}',
     authorized_keys: '{{ server_sftp_authorized_keys }}',
     home: '{{ server_home }}',
     port: '{{ server_sftp_port }}'
-  }
+  },
+  webroot: '{{ server_webroot }}'
 }

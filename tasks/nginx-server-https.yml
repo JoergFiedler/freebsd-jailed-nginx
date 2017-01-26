@@ -1,14 +1,46 @@
 ---
-- name: Copy server key
+- name: Create certificate directory
+  file:
+    path: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ server.name }}'
+    state: directory
+
+- name: --cleanup-- Remove old server certificates
+  file:
+    path: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ item }}'
+    state: absent
+  with_items:
+    - '{{ server.name }}-key.pem'
+    - '{{ server.name }}-cachain.pem'
+    - '{{ server.name }}-certbundle.pem'
+    - '{{ server.name }}-dhparam.pem'
+
+- name: --cleanup-- Copy server certificates
+  copy:
+    force: no
+    src: '{{ item.src }}'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ server.name }}/{{ item.dst }}'
+  with_items:
+    - { src: '{{ server.name }}-key.pem', dst: 'key.pem'}
+    - { src: '{{ server.name }}-certbundle.pem', dst: 'fullchain.pem'}
+    - { src: '{{ server.name }}-dhparam.pem', dst: 'dhparam.pem'}
+
+- name: Copy DH params file
   copy:
     src: '{{ item }}'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ item }}'
   with_items:
-    - '{{ server.name }}-key.pem'
-    - '{{ server.name }}-certbundle.pem'
-    - '{{ server.name }}-dhparam.pem'
+    - '{{ server.name }}/dhparam.pem'
   notify:
   - Reload jail s nginx
+  when: server.https.use_letsencrypt | default(false)
+
+- name: Add server to acme-client (letsencrypt)
+  lineinfile:
+    dest: '{{ jail_home.stdout }}{{ nginx_letsencrypt_domains_file }}'
+    regexp: '^{{ server.name }}'
+    line: '{{ server.name}} {{ server.aliases }}'
+    state: present
+  when: server.https.use_letsencrypt | default(false)
 
 - name: Copy pf configuration (nat rules)
   template:

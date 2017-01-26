@@ -2,6 +2,9 @@
 - set_fact: server_name={{ nginx_server.name }}
 - set_fact: server={{ nginx_servers_defaults|combine(nginx_server, recursive=True) }}
 
+- debug:
+    var: server
+
 - name: Copy server configuration
   template:
     src: 'nginx-server.conf.j2'
@@ -16,7 +19,7 @@
   when: server.proxy is not defined
 
 - include: 'nginx-server-sftp.yml'
-  when: server.sftp is defined
+  when: server.sftp_enabled
 
 - include: 'nginx-server-proxy.yml'
   when: server.proxy is defined
