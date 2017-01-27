@@ -35,7 +35,7 @@
     dest: '{{ jail_home.stdout }}{{ nginx_letsencrypt_domains_file }}'
 
 - name: Make sure /etc/periodic.conf exists
-  file:
+  copy:
     force: no
     content: ''
     dest: '{{ jail_home.stdout }}/etc/periodic.conf'
@@ -44,7 +44,7 @@
   blockinfile:
     dest: '{{ jail_home.stdout }}/etc/periodic.conf'
     state: present
-    marker: '{mark} run acme-client (Lets Encrypt) every week'
+    marker: '# {mark} run acme-client (Lets Encrypt) every week'
     block: |
       weekly_acme_client_enable="YES"
       weekly_acme_client_renewscript="/usr/local/bin/acme-client-weekly.sh"

@@ -93,7 +93,7 @@ server {
 {% endif %}
 
 {% if useLetsEncrypt %}
-  {{ letsEncryptLocation }}
+{{ letsEncryptLocation }}
 {% endif %}
 
 {% if server.proxy is defined %}
