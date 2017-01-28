@@ -1,8 +1,7 @@
 ---
 - include: pf.yml
   tags: nginx
-  with_items:
-    - '{{ nginx_pf_rdrs }}'
+  with_items: '{{ nginx_pf_rdrs }}'
   when: nginx_pf_redirect
 
 - include: nginx.yml

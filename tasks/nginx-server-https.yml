@@ -32,7 +32,7 @@
     - '{{ server.name }}/dhparam.pem'
   notify:
   - Reload jail s nginx
-  when: server.https.use_letsencrypt | default(false)
+  when: server.https.letsencrypt_enabled | default(false)
 
 - name: Add server to acme-client (letsencrypt)
   lineinfile:
@@ -40,7 +40,7 @@
     regexp: '^{{ server.name }}'
     line: '{{ server.name}} {{ server.aliases }}'
     state: present
-  when: server.https.use_letsencrypt | default(false)
+  when: server.https.letsencrypt_enabled | default(false)
 
 - name: Copy pf configuration (nat rules)
   template:

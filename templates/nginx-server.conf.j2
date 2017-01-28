@@ -1,6 +1,6 @@
 {% set isDefault = server.default|default(false) %}
 {% set isHttps = server.https|default(false) %}
-{% set useLetsEncrypt = isHttps and server.https.use_letsencrypt is defined %}
+{% set useLetsEncrypt = isHttps and server.https.letsencrypt_enabled is defined %}
 {% set scheme = 'https' if isHttps else 'http' %}
 {% set aliases = server.aliases if server.aliases is defined else '' %}
 {% set letsEncryptLocation %}
