@@ -5,6 +5,7 @@ host_zfs_www_dir: '{{ host_srv_dir }}/www'
 
 nginx_letsencrypt_domains_file: '/usr/local/etc/acme/domains.txt'
 nginx_letsencrypt_enabled: false
+nginx_syslogd_server: '{{ syslogd_server | default("localhost") }}'
 nginx_tarsnap_enabled: '{{ tarsnap_enabled }}'
 
 nginx_pf_redirect: false
@@ -19,6 +20,7 @@ nginx_servers_defaults: {
   force_www: false,
   name: 'localhost',
   php_fpm_enabled: false,
+  https: { enabled: false, letsencrypt_enabled: false},
   sftp_enabled: false,
   sftp: {
     user: '{{ server_sftp_user }}',
