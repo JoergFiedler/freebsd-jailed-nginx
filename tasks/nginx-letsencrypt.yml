@@ -22,13 +22,19 @@
     path: '{{ jail_home.stdout }}/usr/local/bin'
     state: directory
 
-- name: Copy acme-client script
+- name: Copy acme-client weekly script
   template:
     src: 'acme-client-weekly.j2.sh'
     mode: 0700
     dest: '{{ jail_home.stdout }}/usr/local/bin/acme-client-weekly.sh'
 
-- name: Make sure acme-client domain list file
+- name: Copy acme-client deploy script
+  template:
+    src: 'acme-client-deploy.j2.sh'
+    mode: 0700
+    dest: '{{ jail_home.stdout }}/usr/local/bin/acme-client-deploy.sh'
+
+- name: Make sure acme-client domain list file exists
   copy:
     force: no
     content: ''
@@ -48,4 +54,4 @@
     block: |
       weekly_acme_client_enable="YES"
       weekly_acme_client_renewscript="/usr/local/bin/acme-client-weekly.sh"
-      weekly_acme_client_deployscript="service nginx reload"
+      weekly_acme_client_deployscript="/usr/local/bin/acme-client-deploy.sh"

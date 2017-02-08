@@ -13,7 +13,7 @@
     - Reload jail s nginx
 
 - include: 'nginx-server-https.yml'
-  when: server.https is defined
+  when: server.https.enabled
 
 - include: 'nginx-server-webroot.yml'
   when: server.proxy is not defined

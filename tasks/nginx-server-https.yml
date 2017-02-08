@@ -4,27 +4,17 @@
     path: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ server.name }}'
     state: directory
 
-- name: --cleanup-- Remove old server certificates
-  file:
-    path: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ item }}'
-    state: absent
-  with_items:
-    - '{{ server.name }}-key.pem'
-    - '{{ server.name }}-cachain.pem'
-    - '{{ server.name }}-certbundle.pem'
-    - '{{ server.name }}-dhparam.pem'
-
-- name: --cleanup-- Copy server certificates
+- name: Copy intial (self-signed -localhost-) server certificate
   copy:
     force: no
     src: '{{ item.src }}'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ server.name }}/{{ item.dst }}'
   with_items:
-    - { src: '{{ server.name }}-key.pem', dst: 'key.pem'}
-    - { src: '{{ server.name }}-certbundle.pem', dst: 'fullchain.pem'}
-    - { src: '{{ server.name }}-dhparam.pem', dst: 'dhparam.pem'}
+    - { src: 'localhost-key.pem', dst: 'key.pem'}
+    - { src: 'localhost-certbundle.pem', dst: 'fullchain.pem'}
+    - { src: 'localhost-dhparam.pem', dst: 'dhparam.pem'}
 
-- name: Copy DH params file
+- name: Copy DH params
   copy:
     src: '{{ item }}'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ item }}'

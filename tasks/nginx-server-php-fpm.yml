@@ -39,7 +39,7 @@
   copy: src=php-fpm.conf
         dest={{ jail_home.stdout }}/usr/local/etc/php-fpm.conf
   notify:
-  - Reload jail s php-fpm
+  - Reload jails s php-fpm
 
 - name: Create log directory for php-fpm
   file: path={{ server_logdir_host_zfs_dir }}
@@ -57,7 +57,7 @@
   template: src=nginx-server-php-fpm-pool.conf.p2
     dest={{ jail_home.stdout }}/usr/local/etc/fpm.d/php-fpm-pool-{{ server.name }}.conf
   notify:
-  - Reload {{ jail_name }} s php-fpm
+  - Reload jails s php-fpm
 
 - name: Copy logrotate config
   template: src=newsyslog.conf.d/fpm-pool-access.p2
