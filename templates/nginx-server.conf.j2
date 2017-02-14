@@ -59,7 +59,6 @@ server {
 {% endif %}
 {% endif %}
 
-{% if server.force_https %}
 {% if scheme == 'https' %}
 server {
   listen {{ jail_net_ip }}:80;
@@ -75,7 +74,6 @@ server {
     return 301 https://$host$request_uri;
   }
 }
-{% endif %}
 {% endif %}
 
 server {
