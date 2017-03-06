@@ -7,3 +7,7 @@
 - name: Reload jails s php-fpm
   command: /usr/local/sbin/iocage exec {{ jail_uuid.stdout }} service php-fpm reload
   when: jail_created is defined and not jail_created|changed
+
+- name: Reload jails s sshd
+  command: /usr/local/sbin/iocage exec {{ jail_uuid.stdout }} service sshd reload
+  when: jail_created is defined and not jail_created|changed

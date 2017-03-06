@@ -6,6 +6,8 @@
     regexp: '^{{ server.sftp.user }}:'
     line: '{{ server.sftp.user }}:*:{{ server.sftp.uuid }}:80::0:0:Remote (sftp) User:{{ server.sftp.home }}:/usr/sbin/nologin'
   register: user
+  notify:
+    - Reload jails s sshd
 
 - name: Update user database
   command: pwd_mkdb -p -d {{ jail_home.stdout }}/etc {{ jail_home.stdout }}/etc/master.passwd
@@ -40,6 +42,8 @@
       Match user {{ server.sftp.user }}
         AuthorizedKeysFile /etc/ssh/authorized_key_{{ server.sftp.user }}
         ChrootDirectory {{ server.sftp.home }}
+  notify:
+    - Reload jails s sshd
 
 - name: Activate sshd
   lineinfile:
