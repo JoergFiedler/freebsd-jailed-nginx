@@ -14,6 +14,7 @@
         state=present
         atime=off
         mountpoint={{ server_home_host_zfs_dir }}
+  register: server_webroot_created
 
 - name: Create all paths to server s web root
   file: path={{ jail_home.stdout }}{{ server_home }}
@@ -32,7 +33,7 @@
         group=www
         mode=0666
         dest={{ server_webroot_host_zfs_dir }}/index.html
-  when: jail_created|changed
+  when: server_webroot_created|changed
 
 - name: Configure jail to mount file system from host
   mount: name={{ jail_home.stdout }}{{ server_home }}
