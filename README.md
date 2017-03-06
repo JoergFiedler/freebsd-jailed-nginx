@@ -172,9 +172,9 @@ Proxy host, that forwards traffic to other jails/hosts.
         jail_net_ip: '10.1.0.100' }
       }
 
-Configure nginx to serve multiple static websites.
+Configure nginx to serve as SSL terminating proxy.
 
-    - hosts: nginx-issue-1
+    - hosts: nginx
       become: True
     
       vars:
@@ -192,36 +192,25 @@ Configure nginx to serve multiple static websites.
               {
                 name: 'domain1.com',
                 aliases: 'www.domain1.com',
-                https: { letsencrypt_enabled: true },
+                https: {
+                  letsencrypt_enabled: true, 
+                  enabled: true
+                },
                 force_https: true
               },
               {
                 name: 'domain2.com',
                 aliases: 'www.domain2.com',
-                https: { letsencrypt_enabled: true },
+                https: {
+                  letsencrypt_enabled: true, 
+                  enabled: true 
+                },
                 force_https: true
               }
             ],
         jail_name: 'nginx',
         jail_net_ip: '10.1.0.5' }
               
-Run a php enable website inside a jail.
-
-    - { role: phpside,
-          tags: ['_phpside'],
-          jail_name: 'phpside',
-          nginx_servers: [{
-              name: 'example.com',
-              php_fpm_enabled: true,
-              sftp_enabled: true,
-              sftp: {
-                authorized_keys: 'file/key.pub',
-                port: 40206
-              }
-          }],
-          jail_net_ip: '10.1.0.206' }
-
-
 License
 -------
 
