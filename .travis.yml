@@ -24,6 +24,9 @@ script:
 - test "$(curl -w %{http_code} -s -H "Host:www.freebsd.org" -o /dev/null http://${host})" == "200"
 after_script:
 - vagrant destroy -f || true
+notifications:
+  webhooks:
+    - https://galaxy.ansible.com/api/v1/notifications/
 env:
   global:
   - secure: uakPjEykDcEPfS3GL56lvM8viJ5mzqBmfPit77kh6lJehSb3bW/Wwi3ztkOprRSQkQRUuSFbun8u6P1iLCZSeGHDxKaP6VD7Oe7tT/7TCCu3xYu+dcEl3VbMGGO1Hx7QhgFphEZ368U3Ragan4zUYXqLzRWgXQfZsqR3JUQTrXTS5MQdxZ9KUWeg5r+2DvZTJrB6PSuO09r7oas6hGLfTw1CeN46lC7pPJ/ijHNWjo64GbC4YoCWsVCE9eekNSDOLqbcPuaWxGQ2P2AJ4M89BHWi7b1eiVBSsSGBp8gQ5TNm22ERySq7JoOiYQiFhRXbkMt7Ayuv29eLdszTUW+QIdxb7oYY5YRqt35RHe7czX+cpbBj+6hrlTtFsaq0z7So6goh21J2w3fq4bm4ndfb3xE6B7JJzswgeLOViS3gzCd/3eTPvaW+ctw5KE6mDrltMOISNEat6Ctzra5mNqgrlSbtLYiin+/MI/ikhmICtpi6q3yGD+/HQ/YVSDU2j0+oIIhdBSpLmYOBD7h4XT3rLA3g01VBCFrpcTPATALt3nUYxAe0RoP2+heFQL2Yz661VG/ki6xiZ3zRGWBbR26xSAjMV+J1fIgJZlUJLrzNyTPo7SqvB7octgygcRmQxAPZ8y1Of9zF2Cez/8AxUedjeQqGx99QpTzivk8g47+pBXA=
