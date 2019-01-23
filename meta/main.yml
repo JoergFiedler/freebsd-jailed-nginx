@@ -3,18 +3,20 @@ galaxy_info:
   author: Joerg Fiedler
   description: Provides a jailed nginx server.
   license: BSD
-  min_ansible_version: 2.7
+  min_ansible_version: 2.7.0
   platforms:
     - name: FreeBSD
       versions:
         - 11.2
   galaxy_tags:
-    - freebsd
-    - jails
-    - iocage
     - cloud
     - ec2
+    - freebsd
+    - iocage
+    - jails
     - nginx
+    - system
+    - web
 allow_duplicates: true
 dependencies:
   - JoergFiedler.freebsd-jailed
