@@ -1,6 +1,7 @@
-[![Build Status](https://travis-ci.org/JoergFiedler/freebsd-jailed-nginx.svg?branch=master)](https://travis-ci.org/JoergFiedler/freebsd-jailed-nginx)
 freebsd-jailed-nginx
 ====================
+
+[![Build Status](https://travis-ci.org/JoergFiedler/freebsd-jailed-nginx.svg?branch=master)](https://travis-ci.org/JoergFiedler/freebsd-jailed-nginx)
 
 This role provides a jailed nginx server that listens on `localhost:{80,443}` 
 for incoming requests.
