@@ -1,92 +1,91 @@
 ---
 - name: Install php and required extensions
-  pkgng: name={{ item }}
-         state=present
-         chroot={{ jail_home.stdout }}
-  with_items:
-  - php56
-  - php56-ctype
-  - php56-curl
-  - php56-dom
-  - php56-filter
-  - php56-gd
-  - php56-iconv
-  - php56-json
-  - php56-mbstring
-  - php56-mcrypt
-  - php56-mysql
-  - php56-mysqli
-  - php56-opcache
-  - php56-openssl
-  - php56-tidy
-  - php56-tokenizer
-  - php56-simplexml
-  - php56-session
-  - php56-sqlite3
-  - php56-zip
-  - php56-zlib
-  - php56-xml
+  pkgng:
+    name: '{{ item }}'
+    state: present
+    chroot: '{{ jail_home.stdout }}'
+  loop: '{{ nginx_php_fpm_pkgs }}'
   notify:
-  - Reload jails s php-fpm
+    - Reload jails s php-fpm
+  register: pkg_result
+  until: pkg_result is succeeded
 
 - name: Enable php-fpm service
-  lineinfile: dest={{ jail_home.stdout }}/etc/rc.conf
-              state=present
-              regexp='^php_fpm_enable='
-              line='php_fpm_enable="YES"'
+  lineinfile:
+    backup: '{{ jail_backup_old_files }}'
+    dest: '{{ jail_home.stdout }}/etc/rc.conf'
+    state: present
+    regexp: '^php_fpm_enable='
+    line: 'php_fpm_enable="YES"'
 
 - name: Copy php-fpm.conf
-  copy: src=php-fpm.conf
-        dest={{ jail_home.stdout }}/usr/local/etc/php-fpm.conf
+  template:
+    backup: '{{ jail_backup_old_files }}'
+    src: 'php-fpm.conf.j2'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/php-fpm.conf'
   notify:
-  - Reload jails s php-fpm
+    - Reload jails s php-fpm
 
 - name: Create log directory for php-fpm
-  file: path={{ server_logdir_host_zfs_dir }}
-        state=directory
+  file:
+    path: '{{ server_logdir_host_zfs_dir }}'
+    state: directory
 
 - name: Create fpm.d directory
-  file: path={{ jail_home.stdout }}/usr/local/etc/fpm.d
-        state=directory
+  file:
+    path: '{{ jail_home.stdout }}/usr/local/etc/fpm.d'
+    state: directory
 
 - name: Create logrotate config directory
-  file: path={{ jail_home.stdout }}/usr/local/etc/newsyslog.conf.d
-        state=directory
+  file:
+    path: '{{ jail_home.stdout }}/usr/local/etc/newsyslog.conf.d'
+    state: directory
 
 - name: Copy fpm pool configuration
-  template: src=nginx-server-php-fpm-pool.conf.p2
-    dest={{ jail_home.stdout }}/usr/local/etc/fpm.d/php-fpm-pool-{{ server.name }}.conf
+  template:
+    backup: '{{ jail_backup_old_files }}'
+    src: 'nginx-server-php-fpm-pool.conf.j2'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/fpm.d/php-fpm-pool-{{ server.name }}.conf'
   notify:
-  - Reload jails s php-fpm
+    - Reload jails s php-fpm
 
 - name: Copy logrotate config
-  template: src=newsyslog.conf.d/fpm-pool-access.p2
-    dest={{ jail_home.stdout }}/usr/local/etc/newsyslog.conf.d/php-fpm-{{ server.name }}
+  template:
+    backup: '{{ jail_backup_old_files }}'
+    src: 'newsyslog.conf.d/fpm-pool-access.j2'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/newsyslog.conf.d/php-fpm-{{ server.name }}'
 
 - name: Create php-fpm tmp directory
-  file: path={{ server_webroot_host_zfs_dir }}/tmp
-        owner={{ server.sftp.uuid }}
-        group=www
-        mode=0750
-        state=directory
+  file:
+    backup: '{{ jail_backup_old_files }}'
+    path: '{{ server_webroot_host_zfs_dir }}/tmp'
+    owner: '{{ server.sftp.uuid }}'
+    group: 'www'
+    mode: '0750'
+    state: directory
 
 - name: Copy index.php
-  copy: src=index.php
-        force=no
-        dest={{ server_webroot_host_zfs_dir }}/index.php
-        owner={{ server.sftp.uuid }}
-        group=www
-        mode=0666
-  when: jail_created|changed
+  copy:
+    src: 'index.php'
+    force: no
+    dest: '{{ server_webroot_host_zfs_dir }}/index.php'
+    owner: '{{ server.sftp.uuid }}'
+    group: 'www'
+    mode: '0666'
+  when: jail_created is changed
 
 - name: Copy nginx fastcgi configuration
-  template: src=nginx-server-fastcgi.conf.j2
-            dest={{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.fastcgi.conf
+  template:
+    backup: '{{ jail_backup_old_files }}'
+    src: 'nginx-server-fastcgi.conf.j2'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.fastcgi.conf'
   notify:
-  - Reload jail s nginx
+    - Reload jail s nginx
 
 - name: Copy nginx configuration
-  template: src=nginx-server-php-fpm.conf.j2
-            dest={{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}-php-fpm.conf
+  template:
+    backup: '{{ jail_backup_old_files }}'
+    src: 'nginx-server-php-fpm.conf.j2'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}-php-fpm.conf'
   notify:
-  - Reload jail s nginx
+    - Reload jail s nginx

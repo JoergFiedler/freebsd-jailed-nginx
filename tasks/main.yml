@@ -1,8 +1,12 @@
 ---
-- include: pf.yml
-  tags: nginx
-  with_items: '{{ nginx_pf_rdrs }}'
+- include_tasks: pf.yml
+  tags:
+    - nginx
+  loop: '{{ nginx_pf_rdrs }}'
+  loop_control:
+    loop_var: rdr
   when: nginx_pf_redirect
 
-- include: nginx.yml
-  tags: nginx
+- include_tasks: nginx.yml
+  tags:
+    - nginx

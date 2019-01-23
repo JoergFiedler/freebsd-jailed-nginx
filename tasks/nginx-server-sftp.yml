@@ -1,17 +1,28 @@
 ---
 - name: Create ssh user
   lineinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '{{ jail_home.stdout }}/etc/master.passwd'
     state: present
     regexp: '^{{ server.sftp.user }}:'
-    line: '{{ server.sftp.user }}:*:{{ server.sftp.uuid }}:80::0:0:Remote (sftp) User:{{ server.sftp.home }}:/usr/sbin/nologin'
-  register: user
+    line: >
+      {{ server.sftp.user }}:*:
+      {{ server.sftp.uuid }}:80::0:0:
+      Remote (sftp) User:
+      {{ server.sftp.home }}:/usr/sbin/nologin'
+  register: sftp_user
   notify:
     - Reload jails s sshd
 
 - name: Update user database
-  command: pwd_mkdb -p -d {{ jail_home.stdout }}/etc {{ jail_home.stdout }}/etc/master.passwd
-  when: user.changed
+  command: |
+    pwd_mkdb \
+      -p \
+      -d {{ jail_home.stdout }}/etc \
+      {{ jail_home.stdout }}/etc/master.passwd
+  when: sftp_user.changed
+  tags:
+    - skip_ansible_lint
 
 - name: Copy public half of the key
   copy:
@@ -20,6 +31,7 @@
 
 - name: Copy pf configuration (rdr rules)
   template:
+    backup: '{{ jail_backup_old_files }}'
     src: 'pf.anchor.rdr-jail-sftp.conf.j2'
     dest: '/etc/pf.anchor.rdr-jail.{{ jail_name }}-sftp-{{ server.name }}.conf'
   notify:
@@ -27,6 +39,7 @@
 
 - name: Add pf configuration to anchor.rdr-jail conf
   lineinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '/etc/pf.anchor.rdr-jail.conf'
     state: present
     line: 'include "/etc/pf.anchor.rdr-jail.{{ jail_name }}-sftp-{{ server.name }}.conf"'
@@ -35,6 +48,7 @@
 
 - name: Add user specific sftp/ssh configuration
   blockinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '{{ jail_home.stdout }}/etc/ssh/sshd_sftp_config'
     insertafter: EOF
     marker: '# {mark} {{ server.sftp.user }}'
@@ -47,8 +61,8 @@
 
 - name: Activate sshd
   lineinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '{{ jail_home.stdout }}/etc/rc.conf'
     state: present
     regexp: '^sshd_enable='
     line: 'sshd_enable="YES"'
-

@@ -4,30 +4,58 @@ host_zfs_www_dataset: '{{ host_srv_dataset }}/www'
 host_zfs_www_dir: '{{ host_srv_dir }}/www'
 
 nginx_letsencrypt_domains_file: '/usr/local/etc/acme/domains.txt'
-nginx_letsencrypt_enabled: false
+nginx_letsencrypt_enabled: no
+nginx_servers: []
 nginx_syslogd_server: '{{ syslogd_server | default("localhost") }}'
-nginx_tarsnap_enabled: '{{ tarsnap_enabled }}'
+nginx_tarsnap_enabled: '{{ tarsnap_enabled | default("no") }}'
 
-nginx_pf_redirect: false
+nginx_pf_redirect: no
 nginx_pf_rdrs:
-  - ports: ['http', 'https']
+  - ports:
+      - 'http'
+      - 'https'
     ext_ip: '{{ host_net_ext_ip }}'
     ext_if: '{{ host_net_ext_if }}'
-nginx_servers_defaults: {
-  aliases: '',
-  default: false,
-  force_https: false,
-  force_www: false,
-  name: 'localhost',
-  php_fpm_enabled: false,
-  https: { enabled: false, letsencrypt_enabled: false},
-  sftp_enabled: false,
-  sftp: {
-    user: '{{ server_sftp_user }}',
-    uuid: '{{ server_sftp_uuid }}',
-    authorized_keys: '{{ server_sftp_authorized_keys }}',
-    home: '{{ server_home }}',
+nginx_servers_defaults:
+  aliases: ''
+  basic_auth_enabled: no
+  force_www: no
+  https:
+    enabled: no
+    letsencrypt_enabled: no
+    key_file: 'localhost-key.pem'
+    certbundle_file: 'localhost-certbundle.pem'
+    dhparam_file: 'localhost-dhparam.pem'
+  name: 'default'
+  php_fpm_enabled: no
+  sftp:
+    user: '{{ server_sftp_user }}'
+    uuid: '{{ server_sftp_uuid }}'
+    authorized_keys: '{{ server_sftp_authorized_keys }}'
+    home: '{{ server_home }}'
     port: '{{ server_sftp_port }}'
-  },
+  sftp_enabled: no
   webroot: '{{ server_webroot }}'
-}
+
+nginx_php_fpm_pkgs:
+  - php72
+  - php72-ctype
+  - php72-curl
+  - php72-dom
+  - php72-filter
+  - php72-gd
+  - php72-iconv
+  - php72-json
+  - php72-mbstring
+  - php72-mysqli
+  - php72-opcache
+  - php72-openssl
+  - php72-pecl-mcrypt
+  - php72-session
+  - php72-simplexml
+  - php72-sqlite3
+  - php72-tidy
+  - php72-tokenizer
+  - php72-xml
+  - php72-zip
+  - php72-zlib

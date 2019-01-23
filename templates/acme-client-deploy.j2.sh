@@ -1,11 +1,12 @@
 #!/bin/sh -e
+{{ ansible_managed | comment }}
 
-SSLDIR="/usr/local/etc/nginx/ssl"
-DOMAINSFILE="{{ nginx_letsencrypt_domains_file }}"
+SSL_DIR="/usr/local/etc/nginx/ssl"
+DOMAIN_LIST_FILE="{{ nginx_letsencrypt_domains_file }}"
 
-cat "${DOMAINSFILE}" | while read domain line ; do
-  CERTSDIR="${SSLDIR}/${domain}"
-  cp ${CERTSDIR}/priv-key.pem ${CERTSDIR}/key.pem
+cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
+  certs_dir="${SSL_DIR}/${domain}"
+  cp ${certs_dir}/priv-key.pem ${certs_dir}/key.pem
 done
 
 /usr/sbin/service nginx reload

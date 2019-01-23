@@ -1,3 +1,5 @@
+{{ ansible_managed | comment }}
+
 # redirect http requests on external ip
 rdr pass log on {{ rdr.ext_if }} proto tcp \
   from any \

@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
-# nat http/https request
+# allow traffic to proxied host (externally)
 nat pass log on {{ host_net_ext_if }} proto tcp \
   from {{ jail_net_ip }} \
-  to any port https \
+  to {{ server.proxy.host }} port {{ server.proxy.port | default('443') }} \
   -> {{ host_net_ext_ip }}

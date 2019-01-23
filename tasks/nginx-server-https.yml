@@ -9,31 +9,29 @@
     force: no
     src: '{{ item.src }}'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ server.name }}/{{ item.dst }}'
-  with_items:
-    - { src: 'localhost-key.pem', dst: 'key.pem'}
-    - { src: 'localhost-certbundle.pem', dst: 'fullchain.pem'}
-    - { src: 'localhost-dhparam.pem', dst: 'dhparam.pem'}
-
-- name: Copy DH params
-  copy:
-    src: '{{ item }}'
-    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ item }}'
-  with_items:
-    - '{{ server.name }}/dhparam.pem'
+  loop:
+    - src: '{{ server.https.key_file }}'
+      dst: 'key.pem'
+    - src: '{{ server.https.certbundle_file }}'
+      dst: 'fullchain.pem'
+    - src: '{{ server.https.dhparam_file }}'
+      dst: 'dhparam.pem'
   notify:
   - Reload jail s nginx
-  when: server.https.letsencrypt_enabled | default(false)
+  when: server.https.enabled | default(false)
 
 - name: Add server to acme-client (letsencrypt)
   lineinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '{{ jail_home.stdout }}{{ nginx_letsencrypt_domains_file }}'
     regexp: '^{{ server.name }}'
-    line: '{{ server.name}} {{ server.aliases }}'
+    line: '{{ server.name }} {{ server.aliases }}'
     state: present
-  when: server.https.letsencrypt_enabled | default(false)
+  when: server.https.letsencrypt_enabled and nginx_letsencrypt_enabled | default(false)
 
 - name: Copy pf configuration (nat rules)
   template:
+    backup: '{{ jail_backup_old_files }}'
     src: 'pf.anchor.nat-jail-https.conf.j2'
     dest: '/etc/pf.anchor.nat-jail.{{ jail_name }}-https-{{ server.name }}.conf'
   notify:
@@ -41,6 +39,7 @@
 
 - name: Add pf configuration to anchor.nat-jail conf
   lineinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '/etc/pf.anchor.nat-jail.conf'
     state: present
     line: 'include "/etc/pf.anchor.nat-jail.{{ jail_name }}-https-{{ server.name }}.conf"'

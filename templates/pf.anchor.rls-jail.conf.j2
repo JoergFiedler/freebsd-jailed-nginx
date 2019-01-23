@@ -1,4 +1,0 @@
-# allow traffic to proxied host
-pass log on {{ host_net_int_if }} proto tcp \
-  from {{ jail_net_ip }} \
-  to {{ server.proxy.host }} port {{ server.proxy.port | default('80') }}

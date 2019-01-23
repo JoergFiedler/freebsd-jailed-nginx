@@ -1,27 +1,38 @@
 ---
-- set_fact: server_name={{ nginx_server.name }}
-- set_fact: server={{ nginx_servers_defaults|combine(nginx_server, recursive=True) }}
+- name: Create server specific variables I
+  set_fact: server_name={{ nginx_server.name }}
+
+- name: Create server specific variables II
+  set_fact: server={{ nginx_servers_defaults|combine(nginx_server, recursive=True) }}
 
 - debug:
     var: server
 
 - name: Copy server configuration
   template:
+    backup: '{{ jail_backup_old_files }}'
     src: 'nginx-server.conf.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.server.conf'
   notify:
     - Reload jail s nginx
 
-- include: 'nginx-server-https.yml'
+- name: Copy basic auth password file
+  copy:
+    backup: '{{ jail_backup_old_files }}'
+    src: '{{ server_name }}/htpasswd'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/{{ server_name }}-user.htpasswd'
+  when: server.basic_auth_enabled
+
+- include_tasks: 'nginx-server-https.yml'
   when: server.https.enabled
 
-- include: 'nginx-server-webroot.yml'
+- include_tasks: 'nginx-server-webroot.yml'
   when: server.proxy is not defined
 
-- include: 'nginx-server-sftp.yml'
+- include_tasks: 'nginx-server-sftp.yml'
   when: server.sftp_enabled
 
-- include: 'nginx-server-proxy.yml'
+- include_tasks: 'nginx-server-proxy.yml'
   when: server.proxy is defined
 
 - include: 'nginx-server-php-fpm.yml'

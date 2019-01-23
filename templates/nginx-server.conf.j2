@@ -1,4 +1,5 @@
-{% set isDefault = server.default|default(false) %}
+{{ ansible_managed | comment }}
+
 {% set isHttps = server.https.enabled %}
 {% set useLetsEncrypt = isHttps and server.https.letsencrypt_enabled %}
 {% set scheme = 'https' if isHttps else 'http' %}
@@ -93,8 +94,15 @@ server {
 {% if useLetsEncrypt %}
 {{ letsEncryptLocation }}
 {% endif %}
+{% if server.basic_auth_enabled %}
+  auth_basic            "Server {{ server.name }} requires authentication";
+  auth_basic_user_file  {{ server.name }}-user.htpasswd;
+{% endif %}
 
 {% if server.proxy is defined %}
+  {% set proxyServerPort = server.proxy.port | default(443) %}
+  {% set proxyServerScheme = server.proxy.scheme | default('https') %}
+  
   proxy_set_header Host               $host;
   proxy_set_header X-Real-IP          $remote_addr;
   proxy_set_header X-Forwarded-Proto  $scheme;
@@ -103,7 +111,7 @@ server {
   proxy_connect_timeout 2s;
 
   location / {
-    proxy_pass http://{{ server.proxy.host }}:{{ server.proxy.port | default('80') }};
+    proxy_pass {{proxyServerScheme}}://{{ server.proxy.host }}:{{ proxyServerPort }};
   }
 
 {% else %}

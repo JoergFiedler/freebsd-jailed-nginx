@@ -6,8 +6,8 @@ server_home_host_zfs_dir: '{{ host_zfs_www_dir }}/{{ server_name }}'
 
 server_name_: '{{ server_name | replace(".", "_") }}'
 
-server_sftp_user: 'sftp_{{ server_name_ | truncate(5, True, "") }}'
-server_sftp_uuid: '5000'
+server_sftp_user: 'sftp_{{ server_name_ | truncate(5, True, "", 0) }}'
+server_sftp_uuid: 5000
 server_sftp_authorized_keys: '{{ host_sshd_authorized_keys_file }}'
 server_sftp_port: 10022
 

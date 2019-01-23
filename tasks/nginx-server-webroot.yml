@@ -1,50 +1,61 @@
 ---
 - name: Create server s ZFS dataset s mount point
-  file: path={{ server_home_host_zfs_dir }}
-        state=directory
+  file:
+    path: '{{ server_home_host_zfs_dir }}'
+    state: directory
 
 - name: Create www ZFS dataset
-  zfs:  name={{ host_zfs_www_dataset }}
-        state=present
-        atime=off
-        mountpoint={{ host_zfs_www_dir }}
+  zfs:
+    name: '{{ host_zfs_www_dataset }}'
+    state: present
+    extra_zfs_properties:
+      atime: off
+      mountpoint: '{{ host_zfs_www_dir }}'
 
 - name: Create server s webroot ZFS dataset
-  zfs:  name={{ server_home_host_zfs_dataset }}
-        state=present
-        atime=off
-        mountpoint={{ server_home_host_zfs_dir }}
+  zfs:
+    name: '{{ server_home_host_zfs_dataset }}'
+    state: present
+    extra_zfs_properties:
+      atime: off
+      mountpoint: '{{ server_home_host_zfs_dir }}'
   register: server_webroot_created
 
 - name: Create all paths to server s web root
-  file: path={{ jail_home.stdout }}{{ server_home }}
-        state=directory
+  file:
+    path: '{{ jail_home.stdout }}{{ server_home }}'
+    state: directory
 
 - name: Create webroot directory for server
-  file: path={{ server_webroot_host_zfs_dir }}
-        state=directory
-        owner={{ server.sftp.uuid }}
-        group=www
+  file:
+    backup: '{{ jail_backup_old_files }}'
+    path: '{{ server_webroot_host_zfs_dir }}'
+    state: directory
+    owner: '{{ server.sftp.uuid }}'
+    group: 'www'
 
 - name: Copy index.html
-  copy: src={{ jail_home.stdout }}/usr/local/www/nginx-dist/index.html
-        remote_src=yes
-        owner={{ server.sftp.uuid }}
-        group=www
-        mode=0666
-        dest={{ server_webroot_host_zfs_dir }}/index.html
-  when: server_webroot_created|changed
+  copy:
+    src: '{{ jail_home.stdout }}/usr/local/www/nginx-dist/index.html'
+    remote_src: yes
+    owner: '{{ server.sftp.uuid }}'
+    group: 'www'
+    mode: '0666'
+    dest: '{{ server_webroot_host_zfs_dir }}/index.html'
+  when: server_webroot_created is changed
 
 - name: Configure jail to mount file system from host
-  mount: name={{ jail_home.stdout }}{{ server_home }}
-         fstab={{ jail_home.stdout }}/../fstab
-         fstype=nullfs
-         opts=rw
-         src={{ server_home_host_zfs_dir }}
-         state=present
+  mount:
+    name: '{{ jail_home.stdout }}{{ server_home }}'
+    fstab: '{{ jail_home.stdout }}/../fstab'
+    fstype: 'nullfs'
+    opts: 'rw'
+    src: '{{ server_home_host_zfs_dir }}'
+    state: 'present'
 
 - name: Backup server home with tarsnap
-  template: src=tarsnapper.yml.j2
-            dest=/usr/local/etc/tarsnapper.d/{{ server.name }}.yml
+  template:
+    backup: '{{ jail_backup_old_files }}'
+    src: 'tarsnapper.yml.j2'
+    dest: '/usr/local/etc/tarsnapper.d/{{ server.name }}.yml'
   when: nginx_tarsnap_enabled
-

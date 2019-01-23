@@ -4,9 +4,12 @@
     name: 'nginx'
     state: present
     chroot: '{{ jail_home.stdout }}'
+  register: pkg_result
+  until: pkg_result is succeeded
 
 - name: Copy nginx configuration
   template:
+    backup: '{{ jail_backup_old_files }}'
     src: 'nginx.conf.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/nginx.conf'
 
@@ -14,7 +17,7 @@
   file:
     path: '{{ jail_home.stdout }}/usr/local/etc/nginx/{{ item }}'
     state: directory
-  with_items:
+  loop:
     - 'includes'
     - 'ssl'
 
@@ -27,12 +30,14 @@
 
 - name: Set global sftp/ssh configuration
   template:
+    backup: '{{ jail_backup_old_files }}'
     src: 'sshd_sftp_config.j2'
     dest: '{{ jail_home.stdout }}/etc/ssh/sshd_sftp_config'
     force: no
 
 - name: Use ssh/sftp configuration
   lineinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '{{ jail_home.stdout }}/etc/rc.conf'
     state: present
     force: no
@@ -40,20 +45,23 @@
     line: 'sshd_flags="-f /etc/ssh/sshd_sftp_config"'
 
 - name: Copy fastcgi params
-  copy:
-    src: 'fastcgi_params'
+  template:
+    backup: '{{ jail_backup_old_files }}'
+    src: 'fastcgi_params.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/fastcgi_params'
 
 - name: Enable service
   lineinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '{{ jail_home.stdout }}/etc/rc.conf'
     state: present
     regexp: '^nginx_enable='
     line: 'nginx_enable="YES"'
 
-- include: nginx-letsencrypt.yml
-  when: nginx_letsencrypt_enabled
+- include_tasks: nginx-letsencrypt.yml
+  when: nginx_letsencrypt_enabled | default(false)
 
-- include: nginx-server.yml nginx_server={{item}}
-  with_items:
-    - '{{ nginx_servers }}'
+- include_tasks: nginx-server.yml
+  loop: '{{ nginx_servers }}'
+  loop_control:
+    loop_var: nginx_server

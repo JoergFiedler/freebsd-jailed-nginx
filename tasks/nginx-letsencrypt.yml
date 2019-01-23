@@ -4,8 +4,10 @@
     name: '{{ item }}'
     state: present
     chroot: '{{ jail_home.stdout }}'
-  with_items:
+  loop:
     - acme-client
+  register: pkg_result
+  until: pkg_result is succeeded
 
 - name: Create SSL key directory
   file:
@@ -24,12 +26,14 @@
 
 - name: Copy acme-client weekly script
   template:
+    backup: '{{ jail_backup_old_files }}'
     src: 'acme-client-weekly.j2.sh'
     mode: 0700
     dest: '{{ jail_home.stdout }}/usr/local/bin/acme-client-weekly.sh'
 
 - name: Copy acme-client deploy script
   template:
+    backup: '{{ jail_backup_old_files }}'
     src: 'acme-client-deploy.j2.sh'
     mode: 0700
     dest: '{{ jail_home.stdout }}/usr/local/bin/acme-client-deploy.sh'
@@ -48,6 +52,7 @@
 
 - name: Refresh certificates using periodic.conf
   blockinfile:
+    backup: '{{ jail_backup_old_files }}'
     dest: '{{ jail_home.stdout }}/etc/periodic.conf'
     state: present
     marker: '# {mark} run acme-client (Lets Encrypt) every week'

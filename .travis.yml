@@ -1,0 +1,30 @@
+dist: xenial
+language: python
+python: 2.7
+install:
+- wget https://releases.hashicorp.com/vagrant/2.2.2/vagrant_2.2.2_x86_64.deb
+- sudo dpkg -i vagrant_2.2.2_x86_64.deb
+- pip install -r .requirements.txt
+before_script:
+- vagrant plugin install vagrant-aws
+- ssh-keygen -y -f ~/.vagrant.d/insecure_private_key > ~/.vagrant.d/insecure_private_key.pub
+- ln -s ./ JoergFiedler.freebsd-jailed-nginx
+script:
+- ansible-lint .
+- yamllint .
+- ansible-galaxy install -p ./ -r .requirements.yml
+- vagrant box add JoergFiedler/FreeBSD-11.2 --provider aws
+- vagrant up nginx-fpm --provider aws
+- host=$(vagrant ssh-config nginx-fpm |grep HostName |awk '{print $2}')
+- test "$(curl -w %{http_code} https://${host} -o /dev/null --insecure)" == "200"
+- test $(sftp -P 10022 -o StrictHostKeyChecking=no -i ~/.vagrant.d/insecure_private_key sftp_defau@${host} <<< $'ls -l' |grep webroot |wc -l) == "1"
+- vagrant destroy -f nginx-fpm
+- vagrant up nginx-proxy --provider aws
+- host=$(vagrant ssh-config nginx-proxy |grep HostName |awk '{print $2}')
+- test "$(curl -w %{http_code} -s -H "Host:www.freebsd.org" -o /dev/null http://${host})" == "200"
+after_script:
+- vagrant destroy -f || true
+env:
+  global:
+  - secure: uakPjEykDcEPfS3GL56lvM8viJ5mzqBmfPit77kh6lJehSb3bW/Wwi3ztkOprRSQkQRUuSFbun8u6P1iLCZSeGHDxKaP6VD7Oe7tT/7TCCu3xYu+dcEl3VbMGGO1Hx7QhgFphEZ368U3Ragan4zUYXqLzRWgXQfZsqR3JUQTrXTS5MQdxZ9KUWeg5r+2DvZTJrB6PSuO09r7oas6hGLfTw1CeN46lC7pPJ/ijHNWjo64GbC4YoCWsVCE9eekNSDOLqbcPuaWxGQ2P2AJ4M89BHWi7b1eiVBSsSGBp8gQ5TNm22ERySq7JoOiYQiFhRXbkMt7Ayuv29eLdszTUW+QIdxb7oYY5YRqt35RHe7czX+cpbBj+6hrlTtFsaq0z7So6goh21J2w3fq4bm4ndfb3xE6B7JJzswgeLOViS3gzCd/3eTPvaW+ctw5KE6mDrltMOISNEat6Ctzra5mNqgrlSbtLYiin+/MI/ikhmICtpi6q3yGD+/HQ/YVSDU2j0+oIIhdBSpLmYOBD7h4XT3rLA3g01VBCFrpcTPATALt3nUYxAe0RoP2+heFQL2Yz661VG/ki6xiZ3zRGWBbR26xSAjMV+J1fIgJZlUJLrzNyTPo7SqvB7octgygcRmQxAPZ8y1Of9zF2Cez/8AxUedjeQqGx99QpTzivk8g47+pBXA=
+  - secure: yJmIj/YPaKXVWimyxKRHaV6BPR8xUgcTuS87OoXTZ2uuAdNAeurweBVUiPjXhV4+eJbPG+3w65JpTQfdC0zMtF6DI/BpnATYb6g6K1rJW2Pt6L/uOT1MB+D4M8d83YyKySAPHeBoVOvvqTAQlD1oTJmFDgIGdaK/xMWZXYeUQwfCAONvQvQZDkXHud3+82WS70ER/TqbKIJpNKzZczdvD0Gbnnxn5zKzaLeVTG0SGrMh2lSXHV6vDPyNplWkCkxjOmT2LLfeF6vOwCMjcIeMJbJm9hPO7XpGTz+IVN5NtBdB8DATFpkWvb8SDG7TOK5GbIcLlaI41MvWB+Gqp+4WYaQY0yNl81aUFn4TcW2ACpLuYDNtFht0IXrAWKVz3AXpJrt8gzc3ysTr3GC7HejH+7kysjF37IvtN/IXykCx/FU3OJj9Om12oX8tyW0Nd4mXzQYfEOheNWNYLOb/4Pm4aiZVwVoCUSkyHYhBXR1VNJkoQwBMInhQbz/0IwCExKiVqXzSpk2Xa49Tu1xIe3eXNqR3uSDsyaVzdPG2NSVRgoaXesrKf9MrhuBscqUAXuEs40735ZE1kzguTyAD3hA2aC40fuwcT77dnhTzKGUWw+WuNW+WvYHtejcnsdSJX2GXaVAM66OQvXAEndpYHrbS3uNa1Ks1Y5DiAg/JKeAcvxo=

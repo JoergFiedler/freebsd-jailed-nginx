@@ -1,3 +1,5 @@
+{{ "Managed by Ansible." | comment(decoration="; ") }}
+
 [{{ server.name }}]
 prefix = {{ server_home }}
 listen = /var/run/fpm-{{ server.name }}.sock
@@ -22,7 +24,7 @@ php_admin_value[date.timezone] = {{ host_timezone }}
 php_admin_value[session.save_path] = {{ server_webroot }}/tmp
 php_admin_value[session.hash_function] = sha512
 
-php_admin_value[memory_limit] = 64M
+php_admin_value[memory_limit] = 128M
 php_admin_value[max_execution_time] = 60
 php_admin_value[upload_max_filesize] = 50M
 php_admin_value[post_max_size] = 50M
@@ -34,6 +36,10 @@ php_admin_value[allow_url_include] = Off
 php_admin_value[opcache.enable]=1
 php_admin_value[opcache.revalidate_freq]=60
 php_admin_value[opcache.log_verbosity_level]=2
+php_admin_value[opcache.fast_shutdown]=1
+php_admin_value[opcache.memory_consumption]=128
+php_admin_value[opcache.interned_strings_buffer]=8
+php_admin_value[opcache.max_accelerated_files]=4000
 
 php_admin_value[disable_functions] = disk_free_space, diskfreespace, dl, escapeshellcmd, exec, passthru, php_uname, phpinfo, popen, proc_nice, proc_open, shell_exec, show_source, symlink, system
 
