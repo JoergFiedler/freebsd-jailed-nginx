@@ -7,7 +7,7 @@ CHALLENGE_DIR="/var/www/.well-known/acme-challenge"
 
 cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
    certs_dir="${SSL_DIR}/${domain}"
-   [[ ! -d "${certs_dir}" ]] && mkdir -pm755 "${certs_dir}"
+   test ! -d "${certs_dir}" && mkdir -p 755 "${certs_dir}"
    set +e # RC=2 when time to expire > 30 days
    acme-client -C "${CHALLENGE_DIR}" \
                -k "${certs_dir}/priv-key.pem" \
@@ -16,5 +16,5 @@ cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
                ${domain} ${line}
    RC=$?
    set -e
-   [[ ${RC} -ne 0 && ${RC} -ne 2 ]] && exit ${RC}
+   test "${RC}" = "0" -a "${RC}" = "2" && exit "${RC}"
 done

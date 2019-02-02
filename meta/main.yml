@@ -19,4 +19,4 @@ galaxy_info:
     - web
 allow_duplicates: true
 dependencies:
-  - JoergFiedler.freebsd-jailed
+  - { role: 'JoergFiedler.freebsd-jailed', tags: ['nginx'] }

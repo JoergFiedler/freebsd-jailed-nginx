@@ -1,39 +1,42 @@
 ---
-- name: Create server specific variables I
-  set_fact: server_name={{ nginx_server.name }}
+- block:
+    - name: Create server specific variables I
+      set_fact: server_name={{ nginx_server.name }}
 
-- name: Create server specific variables II
-  set_fact: server={{ nginx_servers_defaults|combine(nginx_server, recursive=True) }}
+    - name: Create server specific variables II
+      set_fact: server={{ nginx_servers_defaults|combine(nginx_server, recursive=True) }}
 
-- debug:
-    var: server
+    - debug:
+        var: server
 
-- name: Copy server configuration
-  template:
-    backup: '{{ jail_backup_old_files }}'
-    src: 'nginx-server.conf.j2'
-    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.server.conf'
-  notify:
-    - Reload jail s nginx
+    - name: Copy server configuration
+      template:
+        backup: '{{ jail_backup_old_files }}'
+        src: 'nginx-server.conf.j2'
+        dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.server.conf'
+      notify:
+        - Reload jail s nginx
 
-- name: Copy basic auth password file
-  copy:
-    backup: '{{ jail_backup_old_files }}'
-    src: '{{ server_name }}/htpasswd'
-    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/{{ server_name }}-user.htpasswd'
-  when: server.basic_auth_enabled
+    - name: Copy basic auth password file
+      copy:
+        backup: '{{ jail_backup_old_files }}'
+        src: '{{ server_name }}/htpasswd'
+        dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/{{ server_name }}-user.htpasswd'
+      when: server.basic_auth_enabled
 
-- include_tasks: 'nginx-server-https.yml'
-  when: server.https.enabled
+    - import_tasks: 'nginx-server-https.yml'
+      when: server.https.enabled
 
-- include_tasks: 'nginx-server-webroot.yml'
-  when: server.proxy is not defined
+    - import_tasks: 'nginx-server-webroot.yml'
+      when: server.proxy is not defined
 
-- include_tasks: 'nginx-server-sftp.yml'
-  when: server.sftp_enabled
+    - import_tasks: 'nginx-server-sftp.yml'
+      when: server.sftp_enabled
 
-- include_tasks: 'nginx-server-proxy.yml'
-  when: server.proxy is defined
+    - import_tasks: 'nginx-server-proxy.yml'
+      when: server.proxy is defined
 
-- include: 'nginx-server-php-fpm.yml'
-  when: server.php_fpm_enabled
+    - import_tasks: 'nginx-server-php-fpm.yml'
+      when: server.php_fpm_enabled
+  tags:
+    - 'nginx'

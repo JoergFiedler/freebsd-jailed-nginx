@@ -58,7 +58,7 @@
     regexp: '^nginx_enable='
     line: 'nginx_enable="YES"'
 
-- include_tasks: nginx-letsencrypt.yml
+- import_tasks: nginx-letsencrypt.yml
   when: nginx_letsencrypt_enabled | default(false)
 
 - include_tasks: nginx-server.yml

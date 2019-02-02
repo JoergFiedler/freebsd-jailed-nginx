@@ -12,7 +12,7 @@
       {{ server.sftp.home }}:/usr/sbin/nologin'
   register: sftp_user
   notify:
-    - Reload jails s sshd
+    - Reload jail s sshd
 
 - name: Update user database
   command: |
@@ -57,7 +57,7 @@
         AuthorizedKeysFile /etc/ssh/authorized_key_{{ server.sftp.user }}
         ChrootDirectory {{ server.sftp.home }}
   notify:
-    - Reload jails s sshd
+    - Reload jail s sshd
 
 - name: Activate sshd
   lineinfile:

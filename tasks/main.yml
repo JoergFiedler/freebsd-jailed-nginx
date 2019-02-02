@@ -7,6 +7,6 @@
     loop_var: rdr
   when: nginx_pf_redirect
 
-- include_tasks: nginx.yml
+- import_tasks: nginx.yml
   tags:
     - nginx

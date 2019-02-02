@@ -6,7 +6,7 @@
     chroot: '{{ jail_home.stdout }}'
   loop: '{{ nginx_php_fpm_pkgs }}'
   notify:
-    - Reload jails s php-fpm
+    - Reload jail s php-fpm
   register: pkg_result
   until: pkg_result is succeeded
 
@@ -24,7 +24,7 @@
     src: 'php-fpm.conf.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/php-fpm.conf'
   notify:
-    - Reload jails s php-fpm
+    - Reload jail s php-fpm
 
 - name: Create log directory for php-fpm
   file:
@@ -47,7 +47,7 @@
     src: 'nginx-server-php-fpm-pool.conf.j2'
     dest: '{{ jail_home.stdout }}/usr/local/etc/fpm.d/php-fpm-pool-{{ server.name }}.conf'
   notify:
-    - Reload jails s php-fpm
+    - Reload jail s php-fpm
 
 - name: Copy logrotate config
   template:
