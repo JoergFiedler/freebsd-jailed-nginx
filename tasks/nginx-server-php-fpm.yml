@@ -2,7 +2,7 @@
 - name: Install php and required extensions
   pkgng:
     name: '{{ item }}'
-    state: present
+    state: latest
     chroot: '{{ jail_home.stdout }}'
   loop: '{{ nginx_php_fpm_pkgs }}'
   notify:

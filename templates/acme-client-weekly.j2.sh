@@ -16,5 +16,5 @@ cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
                ${domain} ${line}
    RC=$?
    set -e
-   test "${RC}" = "0" -a "${RC}" = "2" && exit "${RC}"
+   test "${RC}" != "0" -a "${RC}" != "2" && exit "${RC}"
 done

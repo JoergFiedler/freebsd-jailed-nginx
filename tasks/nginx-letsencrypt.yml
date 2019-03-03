@@ -2,7 +2,7 @@
 - name: Install additional packages
   pkgng:
     name: '{{ item }}'
-    state: present
+    state: latest
     chroot: '{{ jail_home.stdout }}'
   loop:
     - acme-client
