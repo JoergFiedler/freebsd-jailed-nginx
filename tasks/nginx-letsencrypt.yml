@@ -44,6 +44,13 @@
     content: ''
     dest: '{{ jail_home.stdout }}{{ nginx_letsencrypt_domains_file }}'
 
+- name: Copy acme private key if configure
+  copy:
+    force: no
+    src: '{{ nginx_letsencrypt_acme_private_key }}'
+    dest: '{{ jail_home.stdout }}{{ nginx_letsencrypt_config_dir }}/privkey.pem'
+  when: nginx_letsencrypt_acme_private_key | default(false)
+
 - name: Make sure /etc/periodic.conf exists
   copy:
     force: no
