@@ -40,6 +40,9 @@ Set to `yes` the enabled automatic certificate management with Lets Encrypt
 for all nginx servers. If enabled it will install `acme-client` tool and prepare
 some configuration for the servers. Default: `no`.
 
+##### nginx_letsencrypt_acme_private_key
+Use this var to specify the private key, that will be used by acme client to communicate with LetsEncrypt. Default: `'''`.
+
 ##### nginx_tarsnap_enabled
 Whether the webroot of all nginx servers should be backed up using tarsnap. Has
 to be enabled on the host itself (`tarsnap_enabled: yes`). Default: 

@@ -3,9 +3,11 @@
 host_zfs_www_dataset: '{{ host_srv_dataset }}/www'
 host_zfs_www_dir: '{{ host_srv_dir }}/www'
 
-nginx_letsencrypt_domains_file: '/usr/local/etc/acme/domains.txt'
+nginx_letsencrypt_config_dir: '/usr/local/etc/acme'
+nginx_letsencrypt_domains_file: '{{ nginx_letsencrypt_config_dir }}/domains.txt'
 nginx_letsencrypt_enabled: no
 nginx_servers: []
+nginx_letsencrypt_acme_private_key: ''
 nginx_syslogd_server: '{{ syslogd_server | default("localhost") }}'
 nginx_tarsnap_enabled: '{{ tarsnap_enabled | default("no") }}'
 
