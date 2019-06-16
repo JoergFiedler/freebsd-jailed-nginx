@@ -157,19 +157,21 @@ Example Playbook
 Proxy host, that forwards traffic to other external server.
 
     - import_role:
-            name: 'JoergFiedler.freebsd-jailed-nginx'
-          vars:
-            jail_freebsd_release: '11.2-RELEASE'
-            jail_name: 'nginx'
-            jail_net_ip: '10.1.0.10'
-            nginx_pf_redirect: true
-            nginx_servers:
-              - name: 'freebsd'
-                proxy:
-                  host: 'www.freebsd.org'
-                  scheme: 'https'
-                  port: 443
-                  local: no
+        name: 'JoergFiedler.freebsd-jail-host'
+    - import_role:
+        name: 'JoergFiedler.freebsd-jailed-nginx'
+      vars:
+        jail_freebsd_release: '11.2-RELEASE'
+        jail_name: 'nginx'
+        jail_net_ip: '10.1.0.10'
+        nginx_pf_redirect: true
+        nginx_servers:
+          - name: 'freebsd'
+            proxy:
+              host: 'www.freebsd.org'
+              scheme: 'https'
+              port: 443
+              local: no
 
 Nginx server with `php-fpm` module and HTTPS.
 
@@ -180,6 +182,8 @@ Nginx server with `php-fpm` module and HTTPS.
         ansible_python_interpreter: '/usr/local/bin/python2.7'
     
       tasks:
+        - import_role:
+            name: 'JoergFiedler.freebsd-jail-host'
         - import_role:
             name: 'JoergFiedler.freebsd-jailed-nginx'
           vars:
