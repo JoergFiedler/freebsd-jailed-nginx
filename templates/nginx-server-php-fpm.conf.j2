@@ -1,14 +1,15 @@
 {{ ansible_managed | comment }}
 
+set $skip_cache 0;
+client_max_body_size  {{ server.php.upload_max_filesize }};
+
 add_header X-Proxy-Cache $upstream_cache_status;
-fastcgi_cache_key "$request_method$scheme$host$request_uri$is_args$args";
+fastcgi_cache_key "$scheme$request_method$host$request_uri$is_args$args";
 fastcgi_cache {{ server.php.fastcgi_cache }};
 fastcgi_cache_lock on;
 
-fastcgi_no_cache $http_cache_control $http_pragma $skip_cache;
-fastcgi_cache_bypass $http_cache_control $http_pragma $skip_cache;
-fastcgi_hide_header X-Nginx-No-Cache;
-fastcgi_ignore_headers X-Accel-Expires Expires Cache-Control Set-Cookie;
+fastcgi_no_cache $http_pragma $skip_cache;
+fastcgi_cache_bypass $http_cache_control $skip_cache;
 
 fastcgi_cache_revalidate on;
 fastcgi_cache_valid 200 302 301 10m;
