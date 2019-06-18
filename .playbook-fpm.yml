@@ -17,7 +17,8 @@
           - name: 'default'
             https:
               enabled: yes
-            php_fpm_enabled: yes
+            php:
+              fpm_enabled: yes
             sftp_enabled: yes
             sftp:
               authorized_keys: '~/.vagrant.d/insecure_private_key.pub'

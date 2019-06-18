@@ -30,6 +30,14 @@ nginx_servers_defaults:
     dhparam_file: 'localhost-dhparam.pem'
   name: 'default'
   php_fpm_enabled: no
+  php:
+    fpm_enabled: no
+    fastcgi_cache: 'z_nginx'
+    max_requests: 1000
+    max_children: 5
+    memory_limit: '128M'
+    upload_max_filesize: '64M'
+    post_max_size: '48M'
   sftp:
     user: '{{ server_sftp_user }}'
     uuid: '{{ server_sftp_uuid }}'

@@ -1,12 +1,8 @@
 {{ ansible_managed | comment }}
 
-set $skip_cache 1;
-
-client_max_body_size  50M;
-
 add_header X-Proxy-Cache $upstream_cache_status;
 fastcgi_cache_key "$request_method$scheme$host$request_uri$is_args$args";
-fastcgi_cache z_nginx;
+fastcgi_cache {{ server.php.fastcgi_cache }};
 fastcgi_cache_lock on;
 
 fastcgi_no_cache $http_cache_control $http_pragma $skip_cache;
@@ -19,6 +15,5 @@ fastcgi_cache_valid 200 302 301 10m;
 fastcgi_cache_valid 404 1m;
 
 location ~ [^/]\.php(/|$) {
-  set $skip_cache 1;
   include /usr/local/etc/nginx/includes/{{ server.name }}.fastcgi.conf;
 }

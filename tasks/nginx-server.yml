@@ -37,6 +37,6 @@
       when: server.proxy is defined
 
     - import_tasks: 'nginx-server-php-fpm.yml'
-      when: server.php_fpm_enabled
+      when: server.php.fpm_enabled
   tags:
     - 'nginx'

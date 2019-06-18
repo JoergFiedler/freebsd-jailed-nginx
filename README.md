@@ -119,9 +119,30 @@ Lets Encrypt and `acme-client`. You need to set `nginx_letsencrypt_enabled` to `
 ###### name
 The domain name of this server, e.g. `example.com`. Default: `default`.
 
-##### php_fpm_enabled
+##### php
+PHP related settings
+
+###### fpm_enabled
 Set to true to install and enable `php-fpm` package. If enabled the following
-packages listed in `nginx_php_fpm_pkgs` will be installed. 
+packages listed in `nginx_php_fpm_pkgs` will be installed. Default: `no`.
+
+###### fastcgi_cache
+Set to `off` to disabled fastcgi cache. Default: `z_nginx`.
+
+###### max_requests
+The number of requests each child process should execute before respawning. Default: `1000`.
+
+###### max_children
+The max, number of child processes to be created. Default: `5`.
+
+###### memory_limit
+This sets the maximum amount of memory in bytes that a script is allowed to allocate. Default: `128M`.
+
+###### upload_max_filesize
+The maximum size of an uploaded file. Default: `48M`.
+
+###### post_max_size
+Sets max size of post data allowed. Default: `64M` 
 
 ##### sftp_enabled
 Enable `sftp` for this server. Creates an user and adjusts settings as
