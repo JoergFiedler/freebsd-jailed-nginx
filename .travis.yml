@@ -21,7 +21,7 @@ script:
 - vagrant destroy -f nginx-fpm
 - vagrant up nginx-proxy --provider aws
 - host=$(vagrant ssh-config nginx-proxy |grep HostName |awk '{print $2}')
-- test "$(curl -w %{http_code} -s -H "Host:www.freebsd.org" -o /dev/null http://${host})" == "200"
+- test "$(curl -w %{http_code} -s -H "Host:www.freebsd.org" -o /dev/null --insecure https://${host})" == "200"
 after_script:
 - vagrant destroy -f || true
 notifications:

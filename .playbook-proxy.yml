@@ -11,8 +11,12 @@
         name: 'JoergFiedler.freebsd-jailed-nginx'
       vars:
         nginx_pf_redirect: true
+        nginx_letsencrypt_enabled: yes
         nginx_servers:
           - name: 'freebsd'
+            https:
+              enabled: yes
+              letsencrypt_enabled: yes
             proxy:
               host: 'www.freebsd.org'
               scheme: 'https'

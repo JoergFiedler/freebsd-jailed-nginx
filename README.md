@@ -43,6 +43,9 @@ some configuration for the servers. Default: `no`.
 ##### nginx_letsencrypt_acme_private_key
 Use this var to specify the private key, that will be used by acme client to communicate with LetsEncrypt. Default: `'''`.
 
+##### nginx_letsencrypt_api_host
+The host name of the server to talk to. Default: `acme-v02.api.letsencrypt.org`.
+
 ##### nginx_tarsnap_enabled
 Whether the webroot of all nginx servers should be backed up using tarsnap. Has
 to be enabled on the host itself (`tarsnap_enabled: yes`). Default: 

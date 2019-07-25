@@ -1,20 +1,22 @@
 #!/bin/sh -e
 {{ ansible_managed | comment }}
 
-SSL_DIR="/usr/local/etc/nginx/ssl"
+SSL_DIR="/usr/local/etc/ssl"
 DOMAIN_LIST_FILE="{{ nginx_letsencrypt_domains_file }}"
-CHALLENGE_DIR="/var/www/.well-known/acme-challenge"
+CHALLENGE_DIR="/var/www"
 
 cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
-   certs_dir="${SSL_DIR}/${domain}"
-   test ! -d "${certs_dir}" && mkdir -p 755 "${certs_dir}"
-   set +e # RC=2 when time to expire > 30 days
-   acme-client -C "${CHALLENGE_DIR}" \
-               -k "${certs_dir}/priv-key.pem" \
-               -c "${certs_dir}" \
-               -bnNv \
-               ${domain} ${line}
-   RC=$?
-   set -e
-   test "${RC}" != "0" -a "${RC}" != "2" && exit "${RC}"
+  multi_domains="--domain ${domain}"
+  certs_dir="${SSL_DIR}/${domain}"
+  test ! -d "${certs_dir}" && mkdir -p 755 "${certs_dir}"
+  for d in $line; do
+    multi_domains="${multi_domains} --domain ${d}"
+  done
+  acme.sh --issue \
+          --webroot ${CHALLENGE_DIR} \
+          --keylength ec-384 \
+          ${multi_domains}
+  RC=$?
+  set -e
+  test "${RC}" != "0" -a "${RC}" != "2" && exit "${RC}"
 done

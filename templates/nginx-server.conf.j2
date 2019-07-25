@@ -14,9 +14,9 @@
   add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
   add_header X-Frame-Options "SAMEORIGIN";
 
-  ssl_certificate_key       /usr/local/etc/nginx/ssl/{{ server.name }}/key.pem;
-  ssl_certificate           /usr/local/etc/nginx/ssl/{{ server.name }}/fullchain.pem;
-  ssl_dhparam               /usr/local/etc/nginx/ssl/{{ server.name }}/dhparam.pem;
+  ssl_certificate_key       /usr/local/etc/ssl/{{ server.name }}/key.pem;
+  ssl_certificate           /usr/local/etc/ssl/{{ server.name }}/fullchain.pem;
+  ssl_dhparam               /usr/local/etc/ssl/{{ server.name }}/dhparam.pem;
 
   ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
   ssl_ciphers               'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';

@@ -5,13 +5,13 @@
     state: latest
     chroot: '{{ jail_home.stdout }}'
   loop:
-    - acme-client
+    - acme.sh
   register: pkg_result
   until: pkg_result is succeeded
 
 - name: Create SSL key directory
   file:
-    path: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl'
+    path: '{{ jail_home.stdout }}/usr/local/etc/ssl'
     state: directory
 
 - name: Create challenge directory
@@ -24,21 +24,21 @@
     path: '{{ jail_home.stdout }}/usr/local/bin'
     state: directory
 
-- name: Copy acme-client weekly script
+- name: Copy acme.sh weekly script
   template:
     backup: '{{ jail_backup_old_files }}'
     src: 'acme-client-weekly.j2.sh'
     mode: 0700
     dest: '{{ jail_home.stdout }}/usr/local/bin/acme-client-weekly.sh'
 
-- name: Copy acme-client deploy script
+- name: Copy acme.sh deploy script
   template:
     backup: '{{ jail_backup_old_files }}'
     src: 'acme-client-deploy.j2.sh'
     mode: 0700
     dest: '{{ jail_home.stdout }}/usr/local/bin/acme-client-deploy.sh'
 
-- name: Make sure acme-client domain list file exists
+- name: Make sure acme.sh domain list file exists
   copy:
     force: no
     content: ''
