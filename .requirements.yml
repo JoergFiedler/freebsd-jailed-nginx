@@ -1,6 +1,6 @@
 - src: 'git+https://github.com/JoergFiedler/freebsd-jail-host.git'
-  version: 'v3.2.0'
+  version: 'v3.2.1'
   name: 'JoergFiedler.freebsd-jail-host'
 - src: 'git+https://github.com/JoergFiedler/freebsd-jailed.git'
-  version: 'v2.2.0'
+  version: 'v3.0.0'
   name: 'JoergFiedler.freebsd-jailed'

@@ -1,14 +1,14 @@
 ---
 - name: Create certificate directory
   file:
-    path: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ server.name }}'
+    path: '{{ jail_home.stdout }}/usr/local/etc/ssl/{{ server.name }}'
     state: directory
 
 - name: Copy intial (self-signed -localhost-) server certificate
   copy:
     force: no
     src: '{{ item.src }}'
-    dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/ssl/{{ server.name }}/{{ item.dst }}'
+    dest: '{{ jail_home.stdout }}/usr/local/etc/ssl/{{ server.name }}/{{ item.dst }}'
   loop:
     - src: '{{ server.https.key_file }}'
       dst: 'key.pem'

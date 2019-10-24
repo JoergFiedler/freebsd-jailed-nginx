@@ -1,10 +1,3 @@
----
-# handlers file for jailed_nginx
-- name: Reload jail s syslogd
-  command: |
-    /usr/local/bin/iocage exec {{ jail_name }} service syslogd reload
-  when: jail_created is defined and not jail_created is changed
-
 - name: Reload jail s nginx
   command: |
     /usr/local/bin/iocage exec {{ jail_name }} service nginx reload
