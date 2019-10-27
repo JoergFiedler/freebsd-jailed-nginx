@@ -51,6 +51,18 @@
     dest: '{{ jail_home.stdout }}{{ nginx_letsencrypt_config_dir }}/privkey.pem'
   when: nginx_letsencrypt_acme_private_key | default(false)
 
+- name: Create periodic folder
+  file:
+    path: '{{ jail_home.stdout }}/usr/local/etc/periodic/weekly'
+    state: directory
+
+- name: Create periodic script
+  template:
+    backup: '{{ jail_backup_old_files }}'
+    src: 'acme-client-periodic.sh.j2'
+    mode: 0750
+    dest: '{{ jail_home.stdout }}/usr/local/etc/periodic/weekly/000.acme-client.sh'
+
 - name: Make sure /etc/periodic.conf exists
   copy:
     force: no

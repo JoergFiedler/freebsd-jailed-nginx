@@ -14,7 +14,7 @@ cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
   done
   acme.sh --issue \
           --webroot ${CHALLENGE_DIR} \
-          --keylength ec-384 \
+          --keylength 2048 \
           ${multi_domains}
   RC=$?
   set -e
