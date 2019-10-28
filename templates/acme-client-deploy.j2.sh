@@ -7,7 +7,6 @@ DOMAIN_LIST_FILE="{{ nginx_letsencrypt_domains_file }}"
 cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
   certs_dir="${SSL_DIR}/${domain}"
   acme.sh --install-cert \
-          --ecc \
           --domain ${domain} \
           --cert-file ${certs_dir}/cert.pem \
           --key-file ${certs_dir}/key.pem \

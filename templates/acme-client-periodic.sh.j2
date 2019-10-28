@@ -1,0 +1,21 @@
+PATH=$PATH:/usr/local/bin:/usr/local/sbin
+export PATH
+
+case "$weekly_acme_client_enable" in
+    [Yy][Ee][Ss])
+        echo
+        echo "Checking Let's Encrypt certificate status:"
+
+        $weekly_acme_client_renewscript
+
+        if [ -n "$weekly_acme_client_deployscript" ] ; then
+                if [ -x "$weekly_acme_client_deployscript" ] ; then
+                        echo "Deploying Let's Encrypt certificates:"
+                        $weekly_acme_client_deployscript
+                else
+                        echo 'Skipped, deploy script does not exist or is not executable'
+                fi
+        fi
+        ;;
+    *)
+        ;;
