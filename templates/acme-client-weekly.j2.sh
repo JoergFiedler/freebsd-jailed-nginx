@@ -12,6 +12,7 @@ cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
   for d in $line; do
     multi_domains="${multi_domains} --domain ${d}"
   done
+  set +e
   acme.sh --issue \
           --webroot ${CHALLENGE_DIR} \
           --keylength 2048 \
