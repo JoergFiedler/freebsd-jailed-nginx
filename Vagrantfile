@@ -2,9 +2,11 @@ VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = 'JoergFiedler/freebsd-11.2'
+  config.vm.box = 'JoergFiedler/freebsd-11.3'
+  config.vm.box_version = "0.0.2"
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.ssh.insert_key = false
+  config.ssh.shell ='/bin/sh'
 
   config.vm.define 'nginx-fpm' do |host|
     host.vm.provision 'ansible', type: 'ansible' do |ansible|
@@ -17,7 +19,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.playbook = './.playbook-proxy.yml'
     end
   end
-
 
   config.vm.provision 'ansible', type: 'ansible' do |ansible|
     ansible.galaxy_roles_path = ENV['ANSIBLE_ROLES_PATH'] || '../'
@@ -75,7 +76,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 echo 'pass all keep state' >> /etc/pf.conf
 echo pf_enable=YES >> /etc/rc.conf
 echo pflog_enable=YES >> /etc/rc.conf
-echo 'firstboot_pkgs_list=\"awscli sudo bash python27\"' >> /etc/rc.conf
+echo 'firstboot_pkgs_list=\"awscli sudo\"' >> /etc/rc.conf
 mkdir -p /usr/local/etc/sudoers.d
 /usr/sbin/service pf start
 echo 'ec2-user ALL=(ALL) NOPASSWD: ALL' >> /usr/local/etc/sudoers.d/ec2-user"
