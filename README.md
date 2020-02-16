@@ -180,50 +180,54 @@ Example Playbook
 
 Proxy host, that forwards traffic to other external server.
 
-    - import_role:
-        name: 'JoergFiedler.freebsd-jail-host'
-    - import_role:
-        name: 'JoergFiedler.freebsd-jailed-nginx'
-      vars:
-        jail_freebsd_release: '11.2-RELEASE'
-        jail_name: 'nginx'
-        jail_net_ip: '10.1.0.10'
-        nginx_pf_redirect: true
-        nginx_servers:
-          - name: 'freebsd'
-            proxy:
-              host: 'www.freebsd.org'
-              scheme: 'https'
-              port: 443
-              local: no
+    - hosts: all
+      become: true
+    
+      tasks:
+        - import_role:
+            name: 'JoergFiedler.freebsd-jail-host'
+        - include_role:
+            name: 'JoergFiedler.freebsd-jailed-nginx'
+          vars:
+            nginx_pf_redirect: true
+            nginx_letsencrypt_enabled: yes
+            nginx_servers:
+              - name: 'test.moumantai.de'
+                https:
+                  enabled: yes
+                  letsencrypt_enabled: yes
+                proxy:
+                  host: 'www.freebsd.org'
+                  scheme: 'https'
+                  port: 443
+                  local: no
+            jail_net_ip: '10.1.0.10'
+            jail_name: 'nginx'
 
 Nginx server with `php-fpm` module and HTTPS.
 
     - hosts: all
       become: true
     
-      vars:
-        ansible_python_interpreter: '/usr/local/bin/python2.7'
-    
       tasks:
         - import_role:
             name: 'JoergFiedler.freebsd-jail-host'
-        - import_role:
+        - include_role:
             name: 'JoergFiedler.freebsd-jailed-nginx'
           vars:
-            jail_freebsd_release: '11.2-RELEASE'
-            jail_name: 'nginx'
             jail_net_ip: '10.1.0.10'
+            jail_name: 'nginx'
             nginx_pf_redirect: yes
             nginx_servers:
               - name: 'default'
                 https:
                   enabled: yes
-                php_fpm_enabled: yes
+                php:
+                  fpm_enabled: yes
                 sftp_enabled: yes
                 sftp:
                   authorized_keys: '~/.vagrant.d/insecure_private_key.pub'
-            
+
 License
 -------
 

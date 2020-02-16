@@ -1,6 +1,5 @@
-dist: xenial
+dist: bionic
 language: python
-python: 2.7
 install:
 - wget https://releases.hashicorp.com/vagrant/2.2.2/vagrant_2.2.2_x86_64.deb
 - sudo dpkg -i vagrant_2.2.2_x86_64.deb
@@ -13,7 +12,7 @@ script:
 - ansible-lint .
 - yamllint .
 - ansible-galaxy install -p ./ -r .requirements.yml
-- vagrant box add JoergFiedler/FreeBSD-11.3 --provider aws
+- vagrant box add JoergFiedler/FreeBSD-12 --provider aws
 - vagrant up nginx-fpm --provider aws
 - host=$(vagrant ssh-config nginx-fpm |grep HostName |awk '{print $2}')
 - test "$(curl -w %{http_code} https://${host} -o /dev/null --insecure)" == "200"

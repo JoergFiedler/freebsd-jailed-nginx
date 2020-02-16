@@ -1,10 +1,6 @@
 - hosts: all
   become: true
 
-  vars:
-    ansible_python_interpreter: '/usr/local/bin/python3.6'
-    host_ioc_release_version: '11.3-RELEASE'
-
   tasks:
     - import_role:
         name: 'JoergFiedler.freebsd-jail-host'
@@ -25,4 +21,3 @@
               local: no
         jail_net_ip: '10.1.0.10'
         jail_name: 'nginx'
-        jail_freebsd_release: '{{ host_ioc_release_version }}'

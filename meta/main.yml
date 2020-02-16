@@ -3,11 +3,11 @@ galaxy_info:
   author: Joerg Fiedler
   description: Provides a jailed nginx server.
   license: BSD
-  min_ansible_version: 2.7.0
+  min_ansible_version: 2.9.2
   platforms:
     - name: FreeBSD
       versions:
-        - 11.2
+        - 12
   galaxy_tags:
     - cloud
     - ec2

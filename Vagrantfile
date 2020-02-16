@@ -2,8 +2,7 @@ VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = 'JoergFiedler/freebsd-11.3'
-  config.vm.box_version = "0.0.2"
+  config.vm.box = 'JoergFiedler/freebsd-12'
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.ssh.insert_key = false
   config.ssh.shell ='/bin/sh'
