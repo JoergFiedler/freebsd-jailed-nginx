@@ -14,4 +14,7 @@ cat "${DOMAIN_LIST_FILE}" | while read domain line ; do
           --fullchain-file ${certs_dir}/fullchain.pem
 done
 
-/usr/sbin/service nginx reload
+for service in {{ nginx_letsencrypt_deploy_restart_services }}
+do
+  /usr/sbin/service "${service}" reload
+done

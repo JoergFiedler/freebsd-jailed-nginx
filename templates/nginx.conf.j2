@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
 
-worker_processes  2;
+worker_processes  {{ nginx_worker_processes }};
 
 error_log syslog:server={{ nginx_syslogd_server }};
 
@@ -18,7 +18,7 @@ http {
     include               mime.types;
     default_type          application/octet-stream;
     sendfile              on;
-    client_max_body_size  50M;
+    client_max_body_size  {{ nginx_client_max_body_size }};
     keepalive_timeout     65;
     gzip                  on;
 
