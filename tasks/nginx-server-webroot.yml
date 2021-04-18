@@ -51,7 +51,7 @@
     fstype: 'nullfs'
     opts: 'rw'
     src: '{{ server_home_host_zfs_dir }}'
-    state: 'present'
+    state: 'mounted'
 
 - name: Backup server home with tarsnap
   template:
