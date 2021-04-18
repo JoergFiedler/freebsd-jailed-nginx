@@ -1,6 +1,15 @@
 PATH=$PATH:/usr/local/bin:/usr/local/sbin
 export PATH
 
+#
+# If there is a global system configuration file, suck it in.
+# 
+if [ -r /etc/defaults/periodic.conf ]
+then
+    . /etc/defaults/periodic.conf
+    source_periodic_confs
+fi
+
 case "$weekly_acme_client_enable" in
     [Yy][Ee][Ss])
         echo
@@ -19,3 +28,4 @@ case "$weekly_acme_client_enable" in
         ;;
     *)
         ;;
+esac
