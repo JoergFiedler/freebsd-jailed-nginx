@@ -1,14 +1,14 @@
-- name: Reload jail s nginx
+- name: Reload {{ jail_name }} nginx
   command: |
     /usr/local/bin/iocage exec {{ jail_name }} service nginx reload
   when: jail_created is defined and not jail_created is changed
 
-- name: Reload jail s php-fpm
+- name: Reload {{ jail_name }} php-fpm
   command: |
     /usr/local/bin/iocage exec {{ jail_name }} service php-fpm reload
   when: jail_created is defined and not jail_created is changed
 
-- name: Reload jail s sshd
+- name: Reload {{ jail_name }} sshd
   command: |
     /usr/local/bin/iocage exec {{ jail_name }} service sshd reload
   when: jail_created is defined and not jail_created is changed
