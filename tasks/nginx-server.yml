@@ -15,7 +15,7 @@
         src: 'nginx-server.conf.j2'
         dest: '{{ jail_home.stdout }}/usr/local/etc/nginx/includes/{{ server.name }}.server.conf'
       notify:
-        - Reload jail s nginx
+        - Reload {{ jail_name }} nginx
 
     - name: Copy basic auth password file
       copy:

@@ -17,7 +17,7 @@
     - src: '{{ server.https.dhparam_file }}'
       dst: 'dhparam.pem'
   notify:
-  - Reload jail s nginx
+  - Reload {{ jail_name }} nginx
   when: server.https.enabled | default(false)
 
 - name: Add server to acme-client (letsencrypt)
