@@ -3,17 +3,21 @@
 set $skip_cache 0;
 client_max_body_size  {{ server.php.upload_max_filesize }};
 
-add_header X-Proxy-Cache $upstream_cache_status;
+fastcgi_cache_methods GET HEAD;
 fastcgi_cache_key "$scheme$request_method$host$request_uri$is_args$args";
 fastcgi_cache {{ server.php.fastcgi_cache }};
 fastcgi_cache_lock on;
 
-fastcgi_no_cache $http_pragma $skip_cache;
-fastcgi_cache_bypass $http_cache_control $skip_cache;
+fastcgi_no_cache $http_cache_control $http_pragma $skip_cache;
+fastcgi_cache_bypass $http_cache_control $http_pragma $skip_cache;
 
 fastcgi_cache_revalidate on;
 fastcgi_cache_valid 200 302 301 10m;
 fastcgi_cache_valid 404 1m;
+
+add_header X-Fastcgi-Cache-Skip $skip_cache;
+add_header X-Fastcgi-Cache-Zone {{ server.php.fastcgi_cache }};
+add_header X-Fastcgi-Cache $upstream_cache_status;
 
 location ~ [^/]\.php(/|$) {
   include /usr/local/etc/nginx/includes/{{ server.name }}.fastcgi.conf;
